@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ciencia de Datos — Guias de Estudio</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', system-ui, sans-serif; background: #f9fafb; color: #1f2937; min-height: 100vh; }
+  header { background: #1d3557; color: white; padding: 48px 24px; text-align: center; }
+  header h1 { font-size: 2rem; font-weight: 800; margin-bottom: 8px; }
+  header p { font-size: 1.1rem; color: #d1d5db; }
+  main { max-width: 900px; margin: 0 auto; padding: 48px 24px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; }
+  .card { display: block; background: white; border-radius: 16px; border: 1px solid #e5e7eb; overflow: hidden; text-decoration: none; color: inherit; transition: transform 0.2s, box-shadow 0.2s; }
+  .card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.12); }
+  .card-bar { height: 6px; }
+  .card-body { padding: 24px; }
+  .badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 6px; }
+  .card h2 { font-size: 1.1rem; font-weight: 700; margin: 12px 0 8px; }
+  .card p { font-size: 0.85rem; color: #6b7280; line-height: 1.5; }
+  .footer { margin-top: 48px; text-align: center; font-size: 0.85rem; color: #9ca3af; }
+  .bar-teal { background: #0d9488; }
+  .bar-violet { background: #7c3aed; }
+  .bar-emerald { background: #059669; }
+  .badge-teal { color: #0f766e; background: #f0fdfa; }
+  .badge-violet { color: #6d28d9; background: #f5f3ff; }
+  .badge-emerald { color: #047857; background: #ecfdf5; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Ciencia de Datos — Coursera</h1>
+  <p>Guias de Estudio del Certificado Profesional de IBM</p>
+</header>
+
+<main>
+  <div class="grid">
+
+    <a href="DS1-Que-es-la-ciencia-de-datos.html" class="card">
+      <div class="card-bar bar-teal"></div>
+      <div class="card-body">
+        <span class="badge badge-teal">DS1</span>
+        <h2>Que es la Ciencia de Datos?</h2>
+        <p>Definiciones, roles, Big Data, Machine Learning, aplicaciones y carreras en ciencia de datos.</p>
+      </div>
+    </a>
+
+    <a href="DS2-Herramientas-de-la-ciencia-de-datos.html" class="card">
+      <div class="card-bar bar-violet"></div>
+      <div class="card-body">
+        <span class="badge badge-violet">DS2</span>
+        <h2>Herramientas de la Ciencia de Datos</h2>
+        <p>Lenguajes, librerias, herramientas open-source y comerciales, Jupyter, Git y GitHub.</p>
+      </div>
+    </a>
+
+    <a href="DS3-Metodologias-de-la-ciencia-de-datos.html" class="card">
+      <div class="card-bar bar-emerald"></div>
+      <div class="card-body">
+        <span class="badge badge-emerald">DS3</span>
+        <h2>Metodologias de la Ciencia de Datos</h2>
+        <p>CRISP-DM, enfoque analitico, recoleccion, preparacion, modelado, evaluacion y despliegue.</p>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="footer">
+    <p>Proximamente: DS4 — Python para Ciencia de Datos</p>
+  </div>
+</main>
+
+</body>
+</html>

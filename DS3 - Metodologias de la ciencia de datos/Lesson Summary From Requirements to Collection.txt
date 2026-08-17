@@ -1,0 +1,25 @@
+Lesson Summary: From Requirements to Collection
+Overview
+Congratulations! You have completed this lesson. At this point in the course, you understand the importance of identifying the right data requirements and ensuring appropriate data collection to support the analytical approach.
+
+ Data Requirements stage tasks include identifying the correct and necessary data content, data formats, and data sources for the specific analytical approach. 
+
+ During the Data Collection stage, expert data scientists meticulously revise data requirements and make critical decisions regarding the quantity and quality of data. 
+
+Data Requirement and Collection: Ensuring the Right Ingredients
+This stage of the data science methodology emphasizes identifying, sourcing, understanding, and preparing the necessary data for analysis.
+
+Data Requirements
+Initial data collection is assessed for requirement fulfillment. Requirements are revised based on data availability, quality, and content.
+
+Data Collection
+Requires identifying the source of data to find needed data elements. Data acquisition strategies are applied, and decisions are made regarding unavailable data.
+
+Data Integration
+DBAs/programmers extract, merge data from diverse sources, eliminate redundant data, and prepare data for understanding. Database processes may be automated for efficiency and speed.
+
+Data Understanding
+Use statistics and visualization for data assessment. Identify data gaps and plan for missing data to be filled or substituted. Prepare data for the next stages of analysis.
+
+Key Takeaway
+Data scientists apply descriptive statistics and visualization techniques to assess content, quality, and initial insights from collected data, identify gaps, and determine whether new data is needed or existing data should be substituted.

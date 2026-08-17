@@ -1,0 +1,40 @@
+Glossary: From Requirements to Collection
+Overview
+Welcome! This alphabetized glossary contains many of the terms you’ll encounter in this lesson. These terms are important to recognize when working in the industry, participating in user groups, or engaging in other certificate programs.
+
+Glossary
+Analytics Team A group of professionals, including data scientists and analysts, responsible for performing data analysis and modeling.
+
+Data Collection The process of gathering data from various sources, including demographic, clinical, coverage, and pharmaceutical information.
+
+Data Integration The merging of data from multiple sources to remove redundancy and prepare it for further analysis.
+
+Data Preparation The process of organizing and formatting data to meet the requirements of the modeling technique.
+
+Data Requirements The identification and definition of the necessary data elements, formats, and sources required for analysis.
+
+Data Understanding A stage where data scientists discuss various ways to manage data effectively, including automating certain processes in the database.
+
+DBAs (Database Administrators) Professionals responsible for managing and extracting data from databases.
+
+Decision Tree Classification A modeling technique that uses a tree-like structure to classify data based on specific conditions and variables.
+
+Demographic Information Information about patient characteristics, such as age, gender, and location.
+
+Descriptive Statistics Techniques used to analyze and summarize data, providing initial insights and identifying gaps in data.
+
+Intermediate Results Partial results obtained from predictive modeling that can influence decisions on acquiring additional data.
+
+Patient Cohort A group of patients with specific criteria selected for analysis in a study or model.
+
+Predictive Modeling The building of models to predict future outcomes based on historical data.
+
+Training Set A subset of data used to train or fit a machine learning model; consists of input data and corresponding labeled outputs.
+
+Unavailable Data Data elements that are not currently accessible or integrated into available data sources.
+
+Univariate Modeling analysis focused on a single variable or feature at a time.
+
+Unstructured Data Data that does not have a predefined structure or format (e.g., text, images, audio, video) and requires specialized techniques for analysis.
+
+Visualization The process of representing data visually to gain insights into its content and quality.

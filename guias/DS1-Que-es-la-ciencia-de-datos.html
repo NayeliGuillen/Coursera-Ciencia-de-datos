@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>¿Qué es la Ciencia de Datos? — Guía de Estudio</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: { extend: { colors: {
+    primary: '#1d3557', accent: '#0d7377', warm: '#e76f51',
+    gold: '#e9c46a', sky2: '#457b9d', light: '#f1faee'
+  }}}
+}
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+  body { font-family: 'Inter', system-ui, sans-serif; }
+  .chapter { display: none; }
+  .chapter.active { display: block; }
+  .nav-link.active-nav { background: rgba(13,115,119,0.12); color: #0d7377; font-weight: 600; }
+  .quiz-option { transition: all 0.2s; }
+  .quiz-option:hover { transform: translateX(4px); }
+  .quiz-option.correct { background: #d1fae5 !important; border-color: #10b981 !important; }
+  .quiz-option.incorrect { background: #fee2e2 !important; border-color: #ef4444 !important; }
+  html { scroll-behavior: smooth; }
+  .gterm { border-bottom: 2px dotted #0d7377; cursor: help; position: relative; color: #0a5e61; font-weight: 600; }
+  .gterm .gtooltip {
+    display: none; position: absolute; bottom: 125%; left: 50%; transform: translateX(-50%);
+    background: #1d3557; color: white; padding: 8px 12px; border-radius: 8px;
+    font-size: 11px; min-width: 200px; max-width: 280px; white-space: normal;
+    z-index: 999; line-height: 1.5; box-shadow: 0 4px 16px rgba(0,0,0,0.25); pointer-events: none;
+  }
+  .gterm:hover .gtooltip { display: block; }
+  .flashcard { perspective: 700px; cursor: pointer; }
+  .fc-inner { position: relative; width: 100%; height: 140px; transition: transform 0.55s; transform-style: preserve-3d; }
+  .flashcard.flipped .fc-inner { transform: rotateY(180deg); }
+  .fc-front, .fc-back {
+    position: absolute; width: 100%; height: 100%; backface-visibility: hidden;
+    border-radius: 12px; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; padding: 14px; text-align: center;
+  }
+  .fc-back { transform: rotateY(180deg); }
+  .acc-body { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+  .acc-item.open .acc-body { max-height: 800px; }
+  .acc-arrow { transition: transform 0.3s; }
+  .acc-item.open .acc-arrow { transform: rotate(180deg); }
+</style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+<!-- CROSS-NAV BAR -->
+<div style="position:fixed;top:0;left:0;right:0;z-index:60;background:#1e293b;color:white;font-size:12px;height:32px;display:flex;align-items:center;justify-content:center;gap:16px;padding:0 16px;">
+  <a href="index.html" style="color:#fbbf24;font-weight:600;text-decoration:none;">Inicio</a>
+  <span style="color:#2dd4bf;font-weight:700;border-bottom:2px solid #2dd4bf;">DS1</span>
+  <a href="DS2-Herramientas-de-la-ciencia-de-datos.html" style="color:#c4b5fd;text-decoration:none;">DS2 — Herramientas</a>
+  <a href="DS3-Metodologias-de-la-ciencia-de-datos.html" style="color:#6ee7b7;text-decoration:none;">DS3 — Metodologias</a>
+</div>
+
+<!-- NAVBAR -->
+<nav style="top:32px;" class="fixed left-0 right-0 bg-white/95 backdrop-blur shadow-sm z-50 border-b border-gray-200">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="flex items-center justify-between h-14">
+      <div class="flex items-center gap-2">
+        <span class="text-teal-700 font-bold text-lg">DS1</span>
+        <span class="hidden sm:inline text-sm font-semibold text-slate-800">¿Qué es la Ciencia de Datos?</span>
+      </div>
+      <div class="hidden md:flex items-center gap-2 flex-1 max-w-xs mx-6">
+        <div class="w-full bg-gray-200 rounded-full h-2">
+          <div id="globalProgress" class="bg-teal-600 h-2 rounded-full transition-all duration-500" style="width:0%"></div>
+        </div>
+        <span id="globalProgressText" class="text-xs text-gray-500 whitespace-nowrap">0%</span>
+      </div>
+      <button onclick="document.getElementById('mobileMenu').classList.toggle('hidden')" class="md:hidden p-2 rounded-lg hover:bg-gray-100">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+      <div class="hidden md:flex items-center gap-1 text-sm flex-wrap">
+        <button onclick="showChapter(0)" class="nav-link active-nav px-2 py-1.5 rounded-lg hover:bg-gray-100 transition" data-ch="0">Inicio</button>
+        <button onclick="showChapter(1)" class="nav-link px-2 py-1.5 rounded-lg hover:bg-gray-100 transition" data-ch="1">Definición</button>
+        <button onclick="showChapter(2)" class="nav-link px-2 py-1.5 rounded-lg hover:bg-gray-100 transition" data-ch="2">¿Qué Hacen?</button>
+        <button onclick="showChapter(3)" class="nav-link px-2 py-1.5 rounded-lg hover:bg-gray-100 transition" data-ch="3">ML &amp; IA</button>
+        <button onclick="showChapter(4)" class="nav-link px-2 py-1.5 rounded-lg hover:bg-gray-100 transition" data-ch="4">Big Data</button>
+        <button onclick="showChapter(5)" class="nav-link px-2 py-1.5 rounded-lg hover:bg-gray-100 transition" data-ch="5">Aplicaciones</button>
+        <button onclick="showChapter(6)" class="nav-link px-2 py-1.5 rounded-lg hover:bg-gray-100 transition" data-ch="6">Carreras</button>
+        <button onclick="showChapter(7)" class="nav-link px-2 py-1.5 rounded-lg hover:bg-gray-100 transition" data-ch="7">Glosario</button>
+        <button onclick="showChapter(8)" class="nav-link px-2 py-1.5 rounded-lg hover:bg-gray-100 transition text-indigo-600 font-semibold" data-ch="8">Vocab EN</button>
+        <button onclick="showChapter(9)" class="nav-link px-2 py-1.5 rounded-lg hover:bg-gray-100 transition text-orange-600 font-semibold" data-ch="9">Entrevistas</button>
+        <button onclick="showChapter(10)" class="nav-link px-2 py-1.5 rounded-lg hover:bg-gray-100 transition text-rose-600 font-semibold" data-ch="10">Registro</button>
+      </div>
+    </div>
+  </div>
+  <div id="mobileMenu" class="hidden md:hidden bg-white border-t px-4 py-2 space-y-1 text-sm">
+    <button onclick="showChapter(0);closeMob()" class="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">Inicio</button>
+    <button onclick="showChapter(1);closeMob()" class="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">Cap 1: Definiendo la Ciencia de Datos</button>
+    <button onclick="showChapter(2);closeMob()" class="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">Cap 2: ¿Qué Hacen los Científicos?</button>
+    <button onclick="showChapter(3);closeMob()" class="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">Cap 3: ML, IA y Aprendizaje Profundo</button>
+    <button onclick="showChapter(4);closeMob()" class="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">Cap 4: Big Data y Minería de Datos</button>
+    <button onclick="showChapter(5);closeMob()" class="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">Cap 5: Aplicaciones y Nube</button>
+    <button onclick="showChapter(6);closeMob()" class="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">Cap 6: Carreras y Habilidades</button>
+    <button onclick="showChapter(7);closeMob()" class="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">Cap 7: Glosario</button>
+    <button onclick="showChapter(8);closeMob()" class="block w-full text-left px-3 py-2 rounded hover:bg-gray-100 text-indigo-600">Vocabulario en Inglés</button>
+    <button onclick="showChapter(9);closeMob()" class="block w-full text-left px-3 py-2 rounded hover:bg-gray-100 text-orange-600">Consejos para Entrevistas</button>
+    <button onclick="showChapter(10);closeMob()" class="block w-full text-left px-3 py-2 rounded hover:bg-gray-100 text-rose-600">Registro de Estudios</button>
+  </div>
+</nav>
+
+<main class="pt-24">
+
+<!-- ===== INICIO ===== -->
+<div class="chapter active" id="ch0">
+  <section class="bg-gradient-to-br from-slate-800 via-teal-900 to-cyan-800 text-white py-20 px-4">
+    <div class="max-w-5xl mx-auto text-center">
+      <p class="uppercase tracking-widest text-teal-300/70 text-sm mb-4">Guía de Estudio Completa · Curso 1 de 9</p>
+      <h1 class="text-4xl md:text-6xl font-black mb-4">¿Qué es la<br>Ciencia de Datos?</h1>
+      <p class="text-lg text-gray-300 max-w-2xl mx-auto mb-8">Desde la definición hasta las carreras, herramientas y aplicaciones del campo más prometedor del siglo XXI. Certificado Profesional IBM.</p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <button onclick="showChapter(1)" class="bg-white text-slate-800 font-semibold px-6 py-3 rounded-xl hover:bg-gray-100 transition">Comenzar a estudiar</button>
+        <button onclick="showChapter(9)" class="border-2 border-white/50 text-white font-semibold px-6 py-3 rounded-xl hover:bg-white/10 transition">Preparar entrevista</button>
+      </div>
+    </div>
+  </section>
+  <section class="max-w-5xl mx-auto -mt-10 px-4 mb-12">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="bg-white rounded-xl shadow-lg p-6 text-center"><div class="text-3xl font-black text-teal-700">#1</div><div class="text-sm text-gray-500 mt-1">Trabajo más prometedor (Glassdoor)</div></div>
+      <div class="bg-white rounded-xl shadow-lg p-6 text-center"><div class="text-3xl font-black text-orange-500">80%</div><div class="text-sm text-gray-500 mt-1">Profesionales usan Python</div></div>
+      <div class="bg-white rounded-xl shadow-lg p-6 text-center"><div class="text-3xl font-black text-slate-800">5 V's</div><div class="text-sm text-gray-500 mt-1">Del Big Data</div></div>
+      <div class="bg-white rounded-xl shadow-lg p-6 text-center"><div class="text-3xl font-black text-sky-600">6</div><div class="text-sm text-gray-500 mt-1">Módulos con examen</div></div>
+    </div>
+  </section>
+  <section class="max-w-5xl mx-auto px-4 pb-16">
+    <h2 class="text-2xl font-bold text-slate-800 mb-6 text-center">Contenido del Curso</h2>
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div onclick="showChapter(1)" class="cursor-pointer bg-white rounded-xl shadow hover:shadow-lg transition p-5 border-l-4 border-teal-500"><span class="text-xs font-bold text-teal-600 uppercase">Módulo 1</span><h3 class="font-bold mt-1">Definiendo la Ciencia de Datos</h3><p class="text-sm text-gray-500 mt-1">¿Qué es? Fundamentos y perspectivas.</p></div>
+      <div onclick="showChapter(2)" class="cursor-pointer bg-white rounded-xl shadow hover:shadow-lg transition p-5 border-l-4 border-blue-500"><span class="text-xs font-bold text-blue-600 uppercase">Módulo 2</span><h3 class="font-bold mt-1">¿Qué Hacen los Científicos?</h3><p class="text-sm text-gray-500 mt-1">Día a día, entregables, habilidades.</p></div>
+      <div onclick="showChapter(3)" class="cursor-pointer bg-white rounded-xl shadow hover:shadow-lg transition p-5 border-l-4 border-purple-500"><span class="text-xs font-bold text-purple-600 uppercase">Módulo 3</span><h3 class="font-bold mt-1">ML, IA y Aprendizaje Profundo</h3><p class="text-sm text-gray-500 mt-1">Algoritmos, redes neuronales, IA generativa.</p></div>
+      <div onclick="showChapter(4)" class="cursor-pointer bg-white rounded-xl shadow hover:shadow-lg transition p-5 border-l-4 border-cyan-500"><span class="text-xs font-bold text-cyan-600 uppercase">Módulo 4</span><h3 class="font-bold mt-1">Big Data y Minería</h3><p class="text-sm text-gray-500 mt-1">Las 5 V's, Hadoop, Spark, HDFS.</p></div>
+      <div onclick="showChapter(5)" class="cursor-pointer bg-white rounded-xl shadow hover:shadow-lg transition p-5 border-l-4 border-green-500"><span class="text-xs font-bold text-green-600 uppercase">Módulo 5</span><h3 class="font-bold mt-1">Dominios de Aplicación y Nube</h3><p class="text-sm text-gray-500 mt-1">Salud, banca, retail, nube.</p></div>
+      <div onclick="showChapter(6)" class="cursor-pointer bg-white rounded-xl shadow hover:shadow-lg transition p-5 border-l-4 border-rose-500"><span class="text-xs font-bold text-rose-600 uppercase">Módulo 6</span><h3 class="font-bold mt-1">Carreras y Reclutamiento</h3><p class="text-sm text-gray-500 mt-1">Rutas, habilidades, consejos de empleadores.</p></div>
+      <div onclick="showChapter(7)" class="cursor-pointer bg-white rounded-xl shadow hover:shadow-lg transition p-5 border-l-4 border-gray-400"><span class="text-xs font-bold text-gray-500 uppercase">Extra</span><h3 class="font-bold mt-1">Glosario ES / EN</h3><p class="text-sm text-gray-500 mt-1">~70 términos oficiales del curso IBM.</p></div>
+      <div onclick="showChapter(8)" class="cursor-pointer bg-white rounded-xl shadow hover:shadow-lg transition p-5 border-l-4 border-indigo-400"><span class="text-xs font-bold text-indigo-500 uppercase">Práctica</span><h3 class="font-bold mt-1">Vocabulario en Inglés</h3><p class="text-sm text-gray-500 mt-1">Tarjetas interactivas para practicar.</p></div>
+      <div onclick="showChapter(9)" class="cursor-pointer bg-white rounded-xl shadow hover:shadow-lg transition p-5 border-l-4 border-orange-400"><span class="text-xs font-bold text-orange-500 uppercase">Carrera</span><h3 class="font-bold mt-1">Consejos para Entrevistas</h3><p class="text-sm text-gray-500 mt-1">Preguntas frecuentes en inglés y español.</p></div>
+    </div>
+  </section>
+</div>
+
+<!-- ===== CAP 1: DEFINIENDO LA CIENCIA DE DATOS ===== -->
+<div class="chapter" id="ch1">
+  <section class="bg-gradient-to-r from-teal-700 to-teal-900 text-white py-16 px-4">
+    <div class="max-w-5xl mx-auto"><p class="uppercase tracking-widest text-teal-300 text-sm mb-2">Módulo 1</p>
+    <h1 class="text-3xl md:text-5xl font-black mb-3">Definiendo la Ciencia de Datos</h1>
+    <p class="text-lg text-teal-200 max-w-3xl">Un campo sobre procesos y sistemas para extraer valor de los datos.</p></div>
+  </section>
+  <div class="max-w-5xl mx-auto px-4 py-10">
+    <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 mb-10 border-l-4 border-teal-500">
+      <h2 class="text-xl font-bold text-slate-800 mb-4">¿Qué es la <span class="gterm">Ciencia de Datos<span class="gtooltip">🇪🇸 Ciencia de Datos / 🇺🇸 Data Science — Campo de estudio que usa procesos y sistemas para extraer conocimiento e insights de datos estructurados y no estructurados.</span></span>?</h2>
+      <div class="grid md:grid-cols-3 gap-4 mb-6">
+        <div class="bg-teal-50 rounded-xl p-4 border border-teal-200"><p class="text-sm font-semibold text-teal-800 mb-1">Proceso, no evento</p><p class="text-sm text-gray-600">"Es el proceso de usar datos para entender el mundo." Incluye formulación de hipótesis y validación con datos reales.</p></div>
+        <div class="bg-blue-50 rounded-xl p-4 border border-blue-200"><p class="text-sm font-semibold text-blue-800 mb-1">Arte de descubrir insights</p><p class="text-sm text-gray-600">"El arte de descubrir los insights y tendencias que se esconden detrás de los datos. Traducir datos en historia."</p></div>
+        <div class="bg-purple-50 rounded-xl p-4 border border-purple-200"><p class="text-sm font-semibold text-purple-800 mb-1">Curiosidad + datos</p><p class="text-sm text-gray-600">"Si tienes datos y curiosidad, el solo hecho de analizar y explorar los datos para obtener respuestas es ciencia de datos."</p></div>
+      </div>
+      <blockquote class="border-l-4 border-teal-400 bg-teal-50 rounded-r-xl p-4 italic text-gray-700 text-sm">"Nunca ha habido un mejor momento para ser científico de datos." — Por qué: herramientas baratas, software open source, y datos disponibles en abundancia.</blockquote>
+    </div>
+
+    <h2 class="text-xl font-bold text-slate-800 mb-5 flex items-center gap-2"><span class="w-1.5 h-7 bg-teal-600 rounded-full"></span>¿Por qué es relevante HOY?</h2>
+    <div class="grid md:grid-cols-2 gap-6 mb-10">
+      <div class="bg-white rounded-xl shadow p-6">
+        <ul class="space-y-3 text-sm">
+          <li class="flex gap-3"><span class="text-teal-600 font-bold text-lg">✓</span><span><strong>Datos disponibles:</strong> Antes nos preocupaba la falta de datos. Ahora hay un diluvio de datos.</span></li>
+          <li class="flex gap-3"><span class="text-teal-600 font-bold text-lg">✓</span><span><strong>Algoritmos:</strong> Antes no había. Ahora hay muchos y maduros.</span></li>
+          <li class="flex gap-3"><span class="text-teal-600 font-bold text-lg">✓</span><span><strong>Software:</strong> Antes era caro. Ahora es <span class="gterm">open source<span class="gtooltip">🇺🇸 Open Source / 🇪🇸 Código Abierto — Software cuyo código fuente está disponible públicamente para su uso y modificación.</span></span> y gratuito.</span></li>
+          <li class="flex gap-3"><span class="text-teal-600 font-bold text-lg">✓</span><span><strong>Almacenamiento:</strong> Almacenar grandes cantidades de datos ahora cuesta muy poco.</span></li>
+        </ul>
+      </div>
+      <div class="bg-white rounded-xl shadow p-6">
+        <h3 class="font-bold text-slate-800 mb-3">Las muchas rutas hacia Data Science</h3>
+        <p class="text-sm text-gray-600 mb-3">Personas llegan de campos muy diversos:</p>
+        <div class="flex flex-wrap gap-2">
+          <span class="bg-teal-100 text-teal-800 text-xs px-3 py-1 rounded-full">Matemáticas / Estadística</span>
+          <span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">Ingeniería / Computación</span>
+          <span class="bg-purple-100 text-purple-800 text-xs px-3 py-1 rounded-full">Medicina / Ciencias</span>
+          <span class="bg-orange-100 text-orange-800 text-xs px-3 py-1 rounded-full">Negocios / Economía</span>
+          <span class="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full">Física / Química</span>
+          <span class="bg-pink-100 text-pink-800 text-xs px-3 py-1 rounded-full">Ciencias Sociales</span>
+        </div>
+        <p class="text-xs text-gray-500 mt-3 italic">Lo que todos tienen en común: curiosidad, pensamiento estructurado y amor por los datos.</p>
+      </div>
+    </div>
+
+    <div class="bg-gradient-to-r from-slate-800 to-teal-900 text-white rounded-2xl p-6 mb-10">
+      <h3 class="font-bold text-lg mb-3">El "trabajo más sexy del siglo XXI" — HBR 2012</h3>
+      <p class="text-sm text-gray-300 mb-3">Harvard Business Review llamó a Data Science <em>"The Sexiest Job of the 21st Century"</em> en 2012. Desde 2016, ha sido el <strong class="text-teal-300">#1 trabajo más prometedor</strong> en Glassdoor.</p>
+      <div class="grid md:grid-cols-3 gap-3 text-center text-sm mb-4">
+        <div class="bg-white/10 rounded-lg p-3"><strong class="text-teal-300">75%+</strong><br>de puestos DS piden Python</div>
+        <div class="bg-white/10 rounded-lg p-3"><strong class="text-yellow-300">$314.8B</strong><br>mercado DS para 2025 (GIA)</div>
+        <div class="bg-white/10 rounded-lg p-3"><strong class="text-orange-300">38.2%</strong><br>crecimiento compuesto anual</div>
+      </div>
+      <div class="border-t border-white/20 pt-4">
+        <h4 class="font-bold text-teal-300 mb-2 text-sm">📖 Lectura: "Ciencia de Datos: El Trabajo Más Atractivo del Siglo XXI"</h4>
+        <div class="grid md:grid-cols-2 gap-3 text-xs text-gray-300">
+          <div>
+            <p class="mb-2"><strong class="text-white">Accenture:</strong> La demanda de científicos de datos podría superar la oferta en 250,000 solo en EE.UU. para 2015.</p>
+            <p><strong class="text-white">Bernard Mar (Forbes):</strong> La falta de personas con habilidades necesarias para interpretar Big Data es uno de los mayores desafíos empresariales. Incluso el 50% de los datos tienen experiencia limitada en ciencia de datos.</p>
+          </div>
+          <div>
+            <p class="mb-2"><strong class="text-white">Walmart + Kaggle:</strong> Walmart se acercó a Kaggle para organizar una competencia y analizar sus propios datos de ventas. El ganador proporcionó una mejora notable en predicciones de ventas basadas en datos.</p>
+            <p><strong class="text-white">Michael Chu (McKinsey):</strong> Ganando $30,000 al mes como restaurantero, ganó más en 2014 como científico de datos para una startup en San Francisco.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 border-t-4 border-teal-600" id="quiz1">
+      <h3 class="text-xl font-bold text-slate-800 mb-1">Examen — Módulo 1</h3>
+      <p class="text-sm text-gray-500 mb-6">Definiendo la Ciencia de Datos.</p>
+      <div id="quiz1Questions"></div>
+      <button onclick="gradeQuiz(1)" class="mt-6 bg-teal-600 text-white font-semibold px-8 py-3 rounded-xl hover:bg-teal-700 transition">Calificar</button>
+      <div id="quiz1Result" class="mt-4 hidden"></div>
+    </div>
+    <div class="flex justify-between items-center mt-8 mb-4">
+      <button onclick="showChapter(0)" class="text-sm text-gray-500 hover:text-slate-800">← Inicio</button>
+      <button onclick="showChapter(2)" class="bg-slate-800 text-white px-6 py-2 rounded-xl hover:bg-teal-800 transition text-sm font-semibold">Siguiente: ¿Qué Hacen? →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CAP 2: QUÉ HACEN LOS CIENTÍFICOS ===== -->
+<div class="chapter" id="ch2">
+  <section class="bg-gradient-to-r from-blue-700 to-blue-900 text-white py-16 px-4">
+    <div class="max-w-5xl mx-auto"><p class="uppercase tracking-widest text-blue-300 text-sm mb-2">Módulo 2</p>
+    <h1 class="text-3xl md:text-5xl font-black mb-3">¿Qué Hacen los Científicos de Datos?</h1>
+    <p class="text-lg text-blue-200">Del problema al entregable final: estructura, proceso y habilidades.</p></div>
+  </section>
+  <div class="max-w-5xl mx-auto px-4 py-10">
+    <h2 class="text-xl font-bold text-slate-800 mb-5 flex items-center gap-2"><span class="w-1.5 h-7 bg-blue-600 rounded-full"></span>Un día en la vida de un científico de datos</h2>
+    <div class="grid md:grid-cols-3 gap-4 mb-10">
+      <div class="bg-white rounded-xl shadow p-5 border-t-4 border-blue-400">
+        <h3 class="font-bold text-blue-700 text-sm uppercase mb-2">Motor de recomendación</h3>
+        <p class="text-sm text-gray-600">Construir un sistema que sea <em>"fácil de entender desde el ejecutivo hasta el ingeniero"</em> — y que sea tan eficiente como algo complejo, pero más simple.</p>
+      </div>
+      <div class="bg-white rounded-xl shadow p-5 border-t-4 border-teal-400">
+        <h3 class="font-bold text-teal-700 text-sm uppercase mb-2">Predicción de floraciones de algas</h3>
+        <p class="text-sm text-gray-600">Universidad usó redes neuronales artificiales para predecir cuándo ocurrirían floraciones tóxicas en el agua, ayudando a empresas de tratamiento.</p>
+      </div>
+      <div class="bg-white rounded-xl shadow p-5 border-t-4 border-purple-400">
+        <h3 class="font-bold text-purple-700 text-sm uppercase mb-2">Análisis de quejas (TTC Toronto)</h3>
+        <p class="text-sm text-gray-600">500,000 quejas de tránsito en formato tabular. Análisis de texto + datos estructurados para identificar patrones y mejorar el servicio.</p>
+      </div>
+    </div>
+
+    <h2 class="text-xl font-bold text-slate-800 mb-5 flex items-center gap-2"><span class="w-1.5 h-7 bg-blue-600 rounded-full"></span>El Entregable Final</h2>
+    <div class="grid md:grid-cols-2 gap-6 mb-10">
+      <div class="bg-white rounded-xl shadow p-6">
+        <h3 class="font-bold text-slate-800 mb-3">Estructura del Reporte / <span class="text-blue-600">Report Structure</span></h3>
+        <ol class="space-y-2 text-sm">
+          <li class="flex gap-3"><span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">1</span><span><strong>Cubierta / Cover Page</strong> — Título, autores, fecha</span></li>
+          <li class="flex gap-3"><span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">2</span><span><strong>Resumen ejecutivo / Executive Summary</strong> — Máx. 1 página</span></li>
+          <li class="flex gap-3"><span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">3</span><span><strong>Tabla de contenido / Table of Contents</strong></span></li>
+          <li class="flex gap-3"><span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">4</span><span><strong>Introducción / Introduction</strong> — Contexto y problema</span></li>
+          <li class="flex gap-3"><span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">5</span><span><strong>Metodología / Methodology</strong> — ¿Cómo se hizo?</span></li>
+          <li class="flex gap-3"><span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">6</span><span><strong>Resultados / Results</strong> — Hallazgos</span></li>
+          <li class="flex gap-3"><span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">7</span><span><strong>Discusión / Discussion</strong> — Interpretación</span></li>
+          <li class="flex gap-3"><span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">8</span><span><strong>Conclusión / Conclusion</strong> — Recomendaciones</span></li>
+        </ol>
+      </div>
+      <div class="space-y-4">
+        <div class="bg-blue-50 rounded-xl p-5 border border-blue-200">
+          <h3 class="font-bold text-blue-800 mb-2">Habilidades clave / Key Skills</h3>
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-center">Matemáticas &amp; Estadística</span>
+            <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-center">Programación</span>
+            <span class="bg-teal-100 text-teal-800 px-2 py-1 rounded text-center">Comunicación</span>
+            <span class="bg-teal-100 text-teal-800 px-2 py-1 rounded text-center">Storytelling con datos</span>
+            <span class="bg-purple-100 text-purple-800 px-2 py-1 rounded text-center">Curiosidad</span>
+            <span class="bg-purple-100 text-purple-800 px-2 py-1 rounded text-center">Conocimiento del dominio</span>
+          </div>
+        </div>
+        <div class="bg-white rounded-xl shadow p-5">
+          <h3 class="font-bold text-slate-800 mb-2">Consejo de Dr. Murtaza Haider</h3>
+          <p class="text-sm text-gray-600 italic">"No necesitas ser experto en todo. El científico de datos más valioso es el que puede comunicar resultados complejos de manera simple a personas no técnicas."</p>
+        </div>
+        <div class="bg-slate-800 text-white rounded-xl p-5">
+          <h3 class="font-bold mb-2 text-sm uppercase">Hoja de ruta / Roadmap</h3>
+          <p class="text-sm text-gray-300">Aprende <strong class="text-teal-300">matemáticas y estadística básica → programación (Python) → ML → comunicación de resultados</strong>. La ruta más directa al empleo.</p>
+        </div>
+      </div>
+    </div>
+    <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 mb-10 border-l-4 border-blue-500">
+      <h3 class="text-lg font-bold text-slate-800 mb-3">📖 Lectura: El Entregable Final / The Final Deliverable</h3>
+      <p class="text-xs text-gray-500 mb-4">Fuente: <em>Getting Started with Data Science</em> — Murtaza Haider, IBM Press · Cap. 3</p>
+      <div class="grid md:grid-cols-2 gap-5">
+        <div>
+          <p class="text-sm text-gray-700 mb-3">El propósito último de la analítica es <strong>comunicar hallazgos</strong> a quienes toman decisiones de política o estrategia. El entregable final construye la narrativa sobre los datos.</p>
+          <p class="text-sm text-gray-700 mb-3">En academia, los entregables son reportes de ensayo (1,000–7,000 palabras). En consultoría (McKinsey, Deloitte), son documentos extensos con tablas, gráficas y recomendaciones.</p>
+          <div class="bg-blue-50 rounded-lg p-3 text-xs text-gray-600 border border-blue-200">
+            <strong>Ejemplo real:</strong> El reporte "United States Economic Forecast" de Deloitte — 24 páginas sobre la economía de EE.UU. Usa Tableau y Platone para visualizaciones. Sin narrativa, sería solo un deck de PowerPoint sin impacto.
+          </div>
+        </div>
+        <div class="space-y-2">
+          <h4 class="font-bold text-blue-700 text-sm mb-2">Lista de verificación — ¿Es un buen entregable?</h4>
+          <div class="space-y-1.5 text-xs">
+            <label class="flex gap-2 items-start cursor-pointer"><input type="checkbox" class="mt-0.5 accent-blue-600"><span>¿Le dijiste al lector qué puede ganar leyendo tu reporte?</span></label>
+            <label class="flex gap-2 items-start cursor-pointer"><input type="checkbox" class="mt-0.5 accent-blue-600"><span>¿Describiste el problema y su magnitud con claridad?</span></label>
+            <label class="flex gap-2 items-start cursor-pointer"><input type="checkbox" class="mt-0.5 accent-blue-600"><span>¿Explicaste qué hace significativo tu trabajo?</span></label>
+            <label class="flex gap-2 items-start cursor-pointer"><input type="checkbox" class="mt-0.5 accent-blue-600"><span>¿Pusiste tu trabajo en contexto con referencias relevantes?</span></label>
+            <label class="flex gap-2 items-start cursor-pointer"><input type="checkbox" class="mt-0.5 accent-blue-600"><span>¿Mencionaste desarrollos futuros que surgen de tu trabajo?</span></label>
+            <label class="flex gap-2 items-start cursor-pointer"><input type="checkbox" class="mt-0.5 accent-blue-600"><span>¿El análisis y la narrativa se complementan correctamente?</span></label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 border-t-4 border-blue-600" id="quiz2">
+      <h3 class="text-xl font-bold text-slate-800 mb-1">Examen — Módulo 2</h3>
+      <div id="quiz2Questions"></div>
+      <button onclick="gradeQuiz(2)" class="mt-6 bg-blue-600 text-white font-semibold px-8 py-3 rounded-xl hover:bg-blue-700 transition">Calificar</button>
+      <div id="quiz2Result" class="mt-4 hidden"></div>
+    </div>
+    <div class="flex justify-between items-center mt-8 mb-4">
+      <button onclick="showChapter(1)" class="text-sm text-gray-500 hover:text-slate-800">← Definición</button>
+      <button onclick="showChapter(3)" class="bg-slate-800 text-white px-6 py-2 rounded-xl hover:bg-teal-800 transition text-sm font-semibold">Siguiente: ML &amp; IA →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CAP 3: ML, IA, DEEP LEARNING ===== -->
+<div class="chapter" id="ch3">
+  <section class="bg-gradient-to-r from-purple-800 to-indigo-900 text-white py-16 px-4">
+    <div class="max-w-5xl mx-auto"><p class="uppercase tracking-widest text-purple-300 text-sm mb-2">Módulo 3</p>
+    <h1 class="text-3xl md:text-5xl font-black mb-3">Machine Learning, IA y Aprendizaje Profundo</h1>
+    <p class="text-lg text-purple-200">Cómo las máquinas aprenden a reconocer patrones y hacer predicciones.</p></div>
+  </section>
+  <div class="max-w-5xl mx-auto px-4 py-10">
+    <div class="grid md:grid-cols-3 gap-5 mb-10">
+      <div class="bg-white rounded-xl shadow p-6 border-t-4 border-purple-400">
+        <h3 class="font-bold text-purple-700 mb-2"><span class="gterm">Machine Learning<span class="gtooltip">🇺🇸 Machine Learning / 🇪🇸 Aprendizaje Automático — Rama de la IA que usa algoritmos (modelos) para identificar patrones en datos sin ser programada explícitamente.</span></span></h3>
+        <p class="text-sm text-gray-600 mb-2">Usa <strong>algoritmos (modelos)</strong> para identificar patrones en datos. El modelo <em>aprende</em> de datos históricos.</p>
+        <div class="bg-purple-50 rounded-lg p-3 text-xs text-gray-600"><strong>Proceso:</strong> Datos → Entrenamiento del modelo → Predicciones sobre datos nuevos</div>
+      </div>
+      <div class="bg-white rounded-xl shadow p-6 border-t-4 border-indigo-400">
+        <h3 class="font-bold text-indigo-700 mb-2"><span class="gterm">Deep Learning<span class="gtooltip">🇺🇸 Deep Learning / 🇪🇸 Aprendizaje Profundo — Tipo especializado de ML que usa redes neuronales con múltiples capas para resolver problemas complejos.</span></span></h3>
+        <p class="text-sm text-gray-600 mb-2">Tipo especializado de ML. Emula cómo funciona el cerebro humano. Usa redes neuronales con múltiples capas.</p>
+        <div class="bg-indigo-50 rounded-lg p-3 text-xs text-gray-600"><strong>Requiere:</strong> Grandes datasets etiquetados + poder computacional + tiempo de entrenamiento</div>
+      </div>
+      <div class="bg-white rounded-xl shadow p-6 border-t-4 border-blue-400">
+        <h3 class="font-bold text-blue-700 mb-2">Inteligencia Artificial (IA)</h3>
+        <p class="text-sm text-gray-600 mb-2">Campo más amplio. ML es una rama de IA. Deep Learning es una rama de ML.</p>
+        <div class="bg-blue-50 rounded-lg p-3 text-xs">
+          <div class="text-center"><span class="bg-blue-200 text-blue-800 px-2 py-0.5 rounded text-xs font-bold">IA</span></div>
+          <div class="text-center mt-1">↓</div>
+          <div class="text-center"><span class="bg-purple-200 text-purple-800 px-2 py-0.5 rounded text-xs font-bold">ML</span></div>
+          <div class="text-center mt-1">↓</div>
+          <div class="text-center"><span class="bg-indigo-200 text-indigo-800 px-2 py-0.5 rounded text-xs font-bold">Deep Learning</span></div>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="text-xl font-bold text-slate-800 mb-5 flex items-center gap-2"><span class="w-1.5 h-7 bg-purple-600 rounded-full"></span>Tipos de Machine Learning</h2>
+    <div class="grid md:grid-cols-3 gap-5 mb-10">
+      <div class="bg-white rounded-xl shadow p-5">
+        <span class="inline-block bg-green-100 text-green-800 text-xs font-bold px-2 py-1 rounded-full mb-2">Supervisado / Supervised</span>
+        <p class="text-sm text-gray-600 mb-2">Un humano proporciona datos de entrada + respuestas correctas. El modelo aprende la relación.</p>
+        <div class="space-y-1 text-xs">
+          <div class="bg-green-50 rounded p-2"><strong>Regresión:</strong> predice valor numérico (precio, temperatura)</div>
+          <div class="bg-green-50 rounded p-2"><strong>Clasificación:</strong> predice categoría (spam/no spam, enfermo/sano)</div>
+        </div>
+      </div>
+      <div class="bg-white rounded-xl shadow p-5">
+        <span class="inline-block bg-yellow-100 text-yellow-800 text-xs font-bold px-2 py-1 rounded-full mb-2">No Supervisado / Unsupervised</span>
+        <p class="text-sm text-gray-600 mb-2">Los datos NO están etiquetados. El modelo descubre patrones por sí solo.</p>
+        <div class="space-y-1 text-xs">
+          <div class="bg-yellow-50 rounded p-2"><strong>Clustering:</strong> agrupa datos similares</div>
+          <div class="bg-yellow-50 rounded p-2"><strong>Detección de anomalías:</strong> fraude, intrusiones</div>
+        </div>
+      </div>
+      <div class="bg-white rounded-xl shadow p-5">
+        <span class="inline-block bg-orange-100 text-orange-800 text-xs font-bold px-2 py-1 rounded-full mb-2">Refuerzo / Reinforcement</span>
+        <p class="text-sm text-gray-600 mb-2">El modelo aprende por prueba y error. Recibe recompensas por acciones correctas.</p>
+        <div class="bg-orange-50 rounded p-2 text-xs"><strong>Ejemplo:</strong> Un ratón en un laberinto que busca queso. AlphaGo dominando al Go.</div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 mb-10 border-l-4 border-purple-500">
+      <h3 class="text-lg font-bold text-slate-800 mb-3">📖 Lectura del Curso: ¿Por qué los padres altos no siempre tienen hijos más altos?</h3>
+      <p class="text-xs text-gray-500 mb-4">Fuente: <em>Getting Started with Data Science</em> — Murtaza Haider, IBM Press · Cap. 7 "Why Tall Parents Don't Have Even Taller Children"</p>
+      <div class="grid md:grid-cols-2 gap-5">
+        <div>
+          <p class="text-sm text-gray-700 mb-3">El autor analizó <strong>500,000+ transacciones inmobiliarias</strong> en Toronto para su tesis de doctorado. Quería predecir precios de casas con regresión.</p>
+          <p class="text-sm text-gray-700 mb-3">Al terminar su defensa, una señora al subir al auto le dijo: <em>"¿Por qué les pagan tanto? Solo están confirmando lo que ya sabemos: que las casas más grandes cuestan más."</em></p>
+          <p class="text-sm text-gray-700">Su respuesta: <em>"El valor real de la investigación no es confirmar lo obvio, sino <strong>cuantificar la magnitud</strong> de la relación."</em> ¿En cuánto sube el precio por cada habitación adicional? La regresión responde eso exactamente.</p>
+        </div>
+        <div class="space-y-3">
+          <div class="bg-purple-50 rounded-xl p-4 border border-purple-200">
+            <h4 class="font-bold text-purple-800 text-sm mb-2">¿Qué puede predecir la regresión?</h4>
+            <ul class="text-xs text-gray-600 space-y-1">
+              <li>• ¿Cuánto cuesta una casa con baño adicional?</li>
+              <li>• ¿En cuánto aumenta el precio por cercanía al metro?</li>
+              <li>• ¿Cuánto vale un acabado de piedra vs ladrillo?</li>
+              <li>• Predicción de salarios, demanda, temperatura, ventas</li>
+            </ul>
+          </div>
+          <div class="bg-indigo-50 rounded-xl p-4 border border-indigo-200">
+            <h4 class="font-bold text-indigo-800 text-sm mb-2">¿Por qué "regresión a la media"?</h4>
+            <p class="text-xs text-gray-600">Los hijos de padres muy altos tienden a ser altos, pero no tan altos como sus padres. Los datos <em>regresan</em> hacia el promedio. Este fenómeno estadístico dio nombre al algoritmo.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bg-gradient-to-r from-purple-900 to-indigo-900 text-white rounded-2xl p-6 mb-10">
+      <h3 class="font-bold text-lg mb-3">IA Generativa y Ciencia de Datos</h3>
+      <p class="text-sm text-gray-300 mb-3">La IA generativa (como GPT, DALL-E) es la frontera más reciente. Puede generar texto, imágenes, código. Los científicos de datos ahora integran modelos generativos en sus pipelines.</p>
+      <div class="grid md:grid-cols-2 gap-4 text-sm">
+        <div class="bg-white/10 rounded-lg p-3"><strong class="text-purple-300">Frameworks populares:</strong><br>TensorFlow, PyTorch, Keras (para construir modelos)</div>
+        <div class="bg-white/10 rounded-lg p-3"><strong class="text-indigo-300">Model Zoos:</strong><br>Repositorios de modelos pre-entrenados listos para usar.</div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 border-t-4 border-purple-500" id="quiz3">
+      <h3 class="text-xl font-bold text-slate-800 mb-1">Examen — Módulo 3</h3>
+      <div id="quiz3Questions"></div>
+      <button onclick="gradeQuiz(3)" class="mt-6 bg-purple-600 text-white font-semibold px-8 py-3 rounded-xl hover:bg-purple-700 transition">Calificar</button>
+      <div id="quiz3Result" class="mt-4 hidden"></div>
+    </div>
+    <div class="flex justify-between items-center mt-8 mb-4">
+      <button onclick="showChapter(2)" class="text-sm text-gray-500 hover:text-slate-800">← ¿Qué Hacen?</button>
+      <button onclick="showChapter(4)" class="bg-slate-800 text-white px-6 py-2 rounded-xl hover:bg-teal-800 transition text-sm font-semibold">Siguiente: Big Data →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CAP 4: BIG DATA ===== -->
+<div class="chapter" id="ch4">
+  <section class="bg-gradient-to-r from-cyan-700 to-teal-800 text-white py-16 px-4">
+    <div class="max-w-5xl mx-auto"><p class="uppercase tracking-widest text-cyan-200 text-sm mb-2">Módulo 4</p>
+    <h1 class="text-3xl md:text-5xl font-black mb-3">Big Data y Minería de Datos</h1>
+    <p class="text-lg text-cyan-100">Las 5 V's y las herramientas para procesar datos masivos.</p></div>
+  </section>
+  <div class="max-w-5xl mx-auto px-4 py-10">
+    <div class="bg-white rounded-2xl shadow-lg p-6 mb-10 border-l-4 border-cyan-500">
+      <h2 class="text-xl font-bold text-slate-800 mb-3">¿Qué es <span class="gterm">Big Data<span class="gtooltip">🇺🇸 Big Data — Volúmenes masivos de datos dinámicos y diversos generados por personas, herramientas y máquinas. Requiere tecnología nueva y escalable para procesarlos.</span></span>?</h2>
+      <p class="text-sm text-gray-600 mb-4">Ernst &amp; Young: <em>"Big Data se refiere a los volúmenes dinámicos, grandes y dispares de datos creados por personas, herramientas y máquinas. Requiere tecnología nueva, innovadora y escalable para recopilar, hospedar y procesar analíticamente la vasta cantidad de datos."</em></p>
+    </div>
+
+    <h2 class="text-xl font-bold text-slate-800 mb-5 flex items-center gap-2"><span class="w-1.5 h-7 bg-cyan-600 rounded-full"></span>Las 5 V's del Big Data</h2>
+    <div class="grid md:grid-cols-5 gap-3 mb-10">
+      <div class="bg-red-50 rounded-xl p-4 text-center border border-red-200">
+        <div class="text-2xl font-black text-red-600 mb-1">V</div>
+        <h3 class="font-bold text-red-800 text-sm mb-1">Velocity</h3>
+        <p class="text-xs text-gray-600">Velocidad a la que se acumulan los datos. Near real-time. <em>Ej: YouTube recibe horas de video cada 60 segundos.</em></p>
+      </div>
+      <div class="bg-orange-50 rounded-xl p-4 text-center border border-orange-200">
+        <div class="text-2xl font-black text-orange-600 mb-1">V</div>
+        <h3 class="font-bold text-orange-800 text-sm mb-1">Volume</h3>
+        <p class="text-xs text-gray-600">Escala de los datos. 2.5 quintillones de bytes diarios. Infraestructura escalable necesaria.</p>
+      </div>
+      <div class="bg-yellow-50 rounded-xl p-4 text-center border border-yellow-200">
+        <div class="text-2xl font-black text-yellow-600 mb-1">V</div>
+        <h3 class="font-bold text-yellow-800 text-sm mb-1">Variety</h3>
+        <p class="text-xs text-gray-600">Diversidad: datos estructurados (tablas) vs no estructurados (tweets, fotos, video).</p>
+      </div>
+      <div class="bg-green-50 rounded-xl p-4 text-center border border-green-200">
+        <div class="text-2xl font-black text-green-600 mb-1">V</div>
+        <h3 class="font-bold text-green-800 text-sm mb-1">Veracity</h3>
+        <p class="text-xs text-gray-600">Calidad y origen de los datos. Consistencia, integridad, exactitud. ¿Son reales o falsos?</p>
+      </div>
+      <div class="bg-blue-50 rounded-xl p-4 text-center border border-blue-200">
+        <div class="text-2xl font-black text-blue-600 mb-1">V</div>
+        <h3 class="font-bold text-blue-800 text-sm mb-1">Value</h3>
+        <p class="text-xs text-gray-600">Capacidad de convertir datos en valor. No solo dinero: beneficios médicos, sociales, satisfacción.</p>
+      </div>
+    </div>
+
+    <h2 class="text-xl font-bold text-slate-800 mb-5 flex items-center gap-2"><span class="w-1.5 h-7 bg-cyan-600 rounded-full"></span>Herramientas para Big Data</h2>
+    <div class="grid md:grid-cols-3 gap-5 mb-10">
+      <div class="bg-white rounded-xl shadow p-5 border-t-4 border-cyan-500">
+        <h3 class="font-bold text-cyan-700 mb-2"><span class="gterm">Hadoop<span class="gtooltip">🇺🇸 Hadoop — Framework de Apache para almacenamiento distribuido (HDFS) y procesamiento de Big Data en clústeres de servidores. Escrito en Java.</span></span></h3>
+        <p class="text-sm text-gray-600">Framework Apache para almacenamiento distribuido y procesamiento. <strong>HDFS</strong> = Hadoop Distributed File System. Diseñado para escalar horizontalmente.</p>
+        <div class="bg-cyan-50 rounded p-2 mt-2 text-xs text-gray-500">Maneja el procesamiento y almacenamiento para aplicaciones de Big Data en sistemas de clúster.</div>
+      </div>
+      <div class="bg-white rounded-xl shadow p-5 border-t-4 border-orange-500">
+        <h3 class="font-bold text-orange-700 mb-2"><span class="gterm">Apache Spark<span class="gtooltip">🇺🇸 Apache Spark — Motor de procesamiento rápido y de propósito general para Big Data. Diseñado para ser hasta 100x más rápido que Hadoop MapReduce en memoria.</span></span></h3>
+        <p class="text-sm text-gray-600">Procesamiento en memoria, mucho más rápido que Hadoop. Soporta Python, R, Scala, SQL. Ideal para ML a escala.</p>
+        <div class="bg-orange-50 rounded p-2 mt-2 text-xs text-gray-500">Diseñado para ser más rápido que Hadoop. Procesa en memoria (RAM) en lugar de disco.</div>
+      </div>
+      <div class="bg-white rounded-xl shadow p-5 border-t-4 border-yellow-500">
+        <h3 class="font-bold text-yellow-700 mb-2">Apache Hive</h3>
+        <p class="text-sm text-gray-600">Data warehouse sobre Hadoop. Permite consultas tipo SQL sobre grandes datasets. Ideal para analistas que ya saben SQL.</p>
+        <div class="bg-yellow-50 rounded p-2 mt-2 text-xs text-gray-500">HiveQL es un lenguaje de consulta similar a SQL pero para datos masivos en Hadoop.</div>
+      </div>
+    </div>
+
+    <h2 class="text-xl font-bold text-slate-800 mb-5 flex items-center gap-2"><span class="w-1.5 h-7 bg-cyan-600 rounded-full"></span>Proceso de Minería de Datos / Data Mining Process</h2>
+    <p class="text-sm text-gray-500 mb-2">Fuente: <em>Introducción a la Ciencia de Datos</em> — Murtaza Haider, IBM Press · Cap. 12, pág. 529–531</p>
+    <p class="text-sm text-gray-600 mb-6">El primer paso es <strong>establecer objetivos</strong>: identificar las preguntas clave, los costos y beneficios, y el nivel de precisión esperado. El intercambio costo-beneficio siempre determina el alcance del ejercicio.</p>
+    <div class="space-y-4 mb-10">
+      <div class="bg-white rounded-xl shadow p-5 border-l-4 border-cyan-500">
+        <h3 class="font-bold text-cyan-700 mb-2">1. Selección de Datos <span class="text-xs font-normal text-gray-500 ml-2">/ Data Selection</span></h3>
+        <p class="text-sm text-gray-600 mb-2">La calidad de los resultados depende de la calidad de los datos. A veces están disponibles directamente (ej. minoristas con grandes bases de compras), pero otras veces debes identificar fuentes alternativas o planificar nuevas recolecciones, incluidas encuestas.</p>
+        <div class="bg-cyan-50 rounded-lg p-3 text-xs text-gray-600 border border-cyan-200"><strong>Clave:</strong> El tipo de datos, su tamaño y la frecuencia de recolección impactan directamente el costo. Identificar el tipo correcto de datos es fundamental antes de comenzar.</div>
+      </div>
+      <div class="bg-white rounded-xl shadow p-5 border-l-4 border-blue-500">
+        <h3 class="font-bold text-blue-700 mb-2">2. Preprocesamiento de Datos <span class="text-xs font-normal text-gray-500 ml-2">/ Data Preprocessing</span></h3>
+        <p class="text-sm text-gray-600 mb-2">Los datos en bruto son frecuentemente desordenados: erróneos, irrelevantes o incompletos. En esta etapa se identifican y eliminan atributos irrelevantes, se marcan errores y se desarrolla un método formal para tratar los <strong>datos faltantes</strong>.</p>
+        <div class="grid md:grid-cols-2 gap-3 text-xs">
+          <div class="bg-blue-50 rounded-lg p-3 border border-blue-200"><strong>Datos faltantes aleatorios:</strong> Un conjunto simple de soluciones es suficiente (imputación con media/mediana).</div>
+          <div class="bg-red-50 rounded-lg p-3 border border-red-200"><strong>Datos faltantes sistemáticos:</strong> Debes determinar el impacto. Ej: si todos los de altos ingresos no reportaron su salario, excluirlos genera sesgo sistemático en el análisis.</div>
+        </div>
+      </div>
+      <div class="bg-white rounded-xl shadow p-5 border-l-4 border-purple-500">
+        <h3 class="font-bold text-purple-700 mb-2">3. Transformación de Datos <span class="text-xs font-normal text-gray-500 ml-2">/ Data Transformation</span></h3>
+        <p class="text-sm text-gray-600 mb-2">Determinar el formato apropiado para almacenar los datos. El objetivo es <strong>reducir atributos</strong> sin perder información significativa usando técnicas como el <strong>Análisis de Componentes Principales (PCA)</strong>.</p>
+        <div class="bg-purple-50 rounded-lg p-3 text-xs text-gray-600 border border-purple-200"><strong>Ejemplo práctico:</strong> El ingreso de un individuo puede estar dividido en: salario, renta de propiedades, apoyos gubernamentales. Sumar todas las fuentes crea un indicador representativo del ingreso total. También puede convenir transformar una variable continua (ingreso) en categórica (bajo/medio/alto) para capturar no linealidades.</div>
+      </div>
+      <div class="bg-white rounded-xl shadow p-5 border-l-4 border-yellow-500">
+        <h3 class="font-bold text-yellow-700 mb-2">4. Almacenamiento de Datos <span class="text-xs font-normal text-gray-500 ml-2">/ Data Storage</span></h3>
+        <p class="text-sm text-gray-600 mb-2">Los datos transformados deben almacenarse en un formato que otorgue <strong>acceso eficiente de lectura/escritura</strong>. Durante la minería se crean nuevas variables que se escriben de vuelta en la base original, por lo que el esquema de almacenamiento debe soportarlo.</p>
+        <div class="bg-yellow-50 rounded-lg p-3 text-xs text-gray-600 border border-yellow-200"><strong>Principio clave:</strong> La seguridad y privacidad de los datos deben ser una preocupación principal. Los datos no deben estar dispersos en diferentes servidores, ya que el algoritmo perdería tiempo buscándolos.</div>
+      </div>
+      <div class="bg-white rounded-xl shadow p-5 border-l-4 border-orange-500">
+        <h3 class="font-bold text-orange-700 mb-2">5. Minería de Datos <span class="text-xs font-normal text-gray-500 ml-2">/ Data Mining</span></h3>
+        <p class="text-sm text-gray-600 mb-2">Una vez que los datos están procesados y almacenados, se aplican métodos de análisis: <strong>métodos paramétricos y no paramétricos</strong> y algoritmos de aprendizaje automático.</p>
+        <div class="bg-orange-50 rounded-lg p-3 text-xs text-gray-600 border border-orange-200"><strong>Punto de partida recomendado:</strong> La visualización de datos. Las vistas multidimensionales son muy útiles para desarrollar una comprensión preliminar de las tendencias ocultas en el dataset antes de aplicar algoritmos.</div>
+      </div>
+      <div class="bg-white rounded-xl shadow p-5 border-l-4 border-green-500">
+        <h3 class="font-bold text-green-700 mb-2">6. Evaluación de Resultados <span class="text-xs font-normal text-gray-500 ml-2">/ Results Evaluation</span></h3>
+        <p class="text-sm text-gray-600 mb-2">Se realiza una <strong>evaluación formal</strong> de la capacidad predictiva de los modelos — qué tan efectivos han sido los algoritmos en reproducir datos conocidos (<em>"pronóstico en muestra"</em>). Los resultados se comparten con stakeholders para obtener retroalimentación.</p>
+        <div class="bg-green-50 rounded-lg p-3 text-xs text-gray-600 border border-green-200"><strong>Proceso iterativo:</strong> La minería de datos y la evaluación se repiten en ciclos. Los analistas utilizan algoritmos mejorados a la luz de los comentarios recibidos de las partes interesadas clave.</div>
+      </div>
+    </div>
+    <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 border-t-4 border-cyan-600" id="quiz4">
+      <h3 class="text-xl font-bold text-slate-800 mb-1">Examen — Módulo 4</h3>
+      <div id="quiz4Questions"></div>
+      <button onclick="gradeQuiz(4)" class="mt-6 bg-cyan-600 text-white font-semibold px-8 py-3 rounded-xl hover:bg-cyan-700 transition">Calificar</button>
+      <div id="quiz4Result" class="mt-4 hidden"></div>
+    </div>
+    <div class="flex justify-between items-center mt-8 mb-4">
+      <button onclick="showChapter(3)" class="text-sm text-gray-500 hover:text-slate-800">← ML &amp; IA</button>
+      <button onclick="showChapter(5)" class="bg-slate-800 text-white px-6 py-2 rounded-xl hover:bg-teal-800 transition text-sm font-semibold">Siguiente: Aplicaciones →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CAP 5: APLICACIONES ===== -->
+<div class="chapter" id="ch5">
+  <section class="bg-gradient-to-r from-green-700 to-emerald-800 text-white py-16 px-4">
+    <div class="max-w-5xl mx-auto"><p class="uppercase tracking-widest text-green-300 text-sm mb-2">Módulo 5</p>
+    <h1 class="text-3xl md:text-5xl font-black mb-3">Dominios de Aplicación y Nube</h1>
+    <p class="text-lg text-green-200">La Ciencia de Datos transforma industrias y salva vidas.</p></div>
+  </section>
+  <div class="max-w-5xl mx-auto px-4 py-10">
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
+      <div class="bg-white rounded-xl shadow p-5 border-l-4 border-red-500"><h3 class="font-bold text-red-700 mb-2">🏥 Salud / Healthcare</h3><ul class="text-sm text-gray-600 space-y-1"><li>• Predicción de readmisión de pacientes</li><li>• Detección de enfermedades en imágenes</li><li>• Medicina personalizada</li><li>• Análisis de estudios clínicos</li></ul></div>
+      <div class="bg-white rounded-xl shadow p-5 border-l-4 border-blue-500"><h3 class="font-bold text-blue-700 mb-2">🏦 Finanzas / Finance</h3><ul class="text-sm text-gray-600 space-y-1"><li>• Detección de fraude con tarjetas</li><li>• Gestión de riesgo crediticio</li><li>• Trading algorítmico</li><li>• Predicción de mercados</li></ul></div>
+      <div class="bg-white rounded-xl shadow p-5 border-l-4 border-orange-500"><h3 class="font-bold text-orange-700 mb-2">🛒 Retail / E-commerce</h3><ul class="text-sm text-gray-600 space-y-1"><li>• Sistemas de recomendación</li><li>• Predicción de demanda</li><li>• Optimización de precios</li><li>• Segmentación de clientes</li></ul></div>
+      <div class="bg-white rounded-xl shadow p-5 border-l-4 border-green-500"><h3 class="font-bold text-green-700 mb-2">🌎 Medio Ambiente</h3><ul class="text-sm text-gray-600 space-y-1"><li>• Predicción de fenómenos climáticos</li><li>• Monitoreo de contaminación</li><li>• Análisis de floraciones de algas</li><li>• Optimización energética</li></ul></div>
+      <div class="bg-white rounded-xl shadow p-5 border-l-4 border-purple-500"><h3 class="font-bold text-purple-700 mb-2">🚗 Transporte</h3><ul class="text-sm text-gray-600 space-y-1"><li>• Vehículos autónomos</li><li>• Optimización de rutas</li><li>• Análisis de quejas en tránsito</li><li>• Predicción de demanda (Uber)</li></ul></div>
+      <div class="bg-white rounded-xl shadow p-5 border-l-4 border-cyan-500"><h3 class="font-bold text-cyan-700 mb-2">☁️ Nube / Cloud</h3><ul class="text-sm text-gray-600 space-y-1"><li>• Acceso a cómputo escalable</li><li>• Sin instalación local costosa</li><li>• IBM Watson, AWS SageMaker</li><li>• Google Cloud AI Platform</li></ul></div>
+    </div>
+
+    <div class="bg-gradient-to-r from-slate-800 to-emerald-900 text-white rounded-2xl p-6 mb-10">
+      <h3 class="font-bold text-lg mb-3">La Nube para Ciencia de Datos / Cloud for Data Science</h3>
+      <div class="grid md:grid-cols-3 gap-4 text-sm">
+        <div class="bg-white/10 rounded-lg p-4"><h4 class="font-bold text-emerald-300 mb-1">¿Por qué la nube?</h4><p class="text-gray-300">No necesitas servidores propios. Pagas solo por lo que usas. Escala según necesidad.</p></div>
+        <div class="bg-white/10 rounded-lg p-4"><h4 class="font-bold text-emerald-300 mb-1">Plataformas clave</h4><p class="text-gray-300">IBM Watson Studio, AWS SageMaker, Google Colab, Azure ML. Todas incluyen Jupyter Notebooks.</p></div>
+        <div class="bg-white/10 rounded-lg p-4"><h4 class="font-bold text-emerald-300 mb-1">Colaboración</h4><p class="text-gray-300">Equipos distribuidos globalmente pueden trabajar en los mismos datos y modelos en tiempo real.</p></div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 border-t-4 border-green-600" id="quiz5">
+      <h3 class="text-xl font-bold text-slate-800 mb-1">Examen — Módulo 5</h3>
+      <div id="quiz5Questions"></div>
+      <button onclick="gradeQuiz(5)" class="mt-6 bg-green-600 text-white font-semibold px-8 py-3 rounded-xl hover:bg-green-700 transition">Calificar</button>
+      <div id="quiz5Result" class="mt-4 hidden"></div>
+    </div>
+    <div class="flex justify-between items-center mt-8 mb-4">
+      <button onclick="showChapter(4)" class="text-sm text-gray-500 hover:text-slate-800">← Big Data</button>
+      <button onclick="showChapter(6)" class="bg-slate-800 text-white px-6 py-2 rounded-xl hover:bg-teal-800 transition text-sm font-semibold">Siguiente: Carreras →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CAP 6: CARRERAS ===== -->
+<div class="chapter" id="ch6">
+  <section class="bg-gradient-to-r from-rose-700 to-pink-800 text-white py-16 px-4">
+    <div class="max-w-5xl mx-auto"><p class="uppercase tracking-widest text-rose-200 text-sm mb-2">Módulo 6</p>
+    <h1 class="text-3xl md:text-5xl font-black mb-3">Carreras en Ciencia de Datos</h1>
+    <p class="text-lg text-rose-200">El campo más prometedor, con alta demanda y escasez de talento.</p></div>
+  </section>
+  <div class="max-w-5xl mx-auto px-4 py-10">
+    <div class="grid md:grid-cols-2 gap-6 mb-10">
+      <div class="space-y-4">
+        <div class="bg-white rounded-xl shadow p-5 border-l-4 border-rose-500">
+          <h3 class="font-bold text-rose-700 mb-2">Estado del mercado laboral</h3>
+          <ul class="text-sm text-gray-600 space-y-2">
+            <li>• <strong>#1 trabajo más prometedor</strong> en Glassdoor desde 2016</li>
+            <li>• McKinsey advirtió: enorme escasez de talento DS/Analytics</li>
+            <li>• Forrester (2019): "La demanda solo crecerá"</li>
+            <li>• <strong>$314.8B USD</strong> mercado de plataformas DS para 2025</li>
+            <li>• No solo en tecnología — <strong>todas las industrias</strong> lo necesitan</li>
+          </ul>
+        </div>
+        <div class="bg-white rounded-xl shadow p-5">
+          <h3 class="font-bold text-slate-800 mb-3">¿Cómo convertirte en científico/a de datos?</h3>
+          <ol class="text-sm text-gray-600 space-y-2">
+            <li class="flex gap-2"><span class="bg-rose-100 text-rose-700 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">1</span>Aprende matemáticas y estadística básica</li>
+            <li class="flex gap-2"><span class="bg-rose-100 text-rose-700 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">2</span>Aprende Python (o R) y SQL</li>
+            <li class="flex gap-2"><span class="bg-rose-100 text-rose-700 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">3</span>Practica con datasets reales (Kaggle)</li>
+            <li class="flex gap-2"><span class="bg-rose-100 text-rose-700 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">4</span>Construye un portafolio en GitHub</li>
+            <li class="flex gap-2"><span class="bg-rose-100 text-rose-700 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">5</span>Obtén certificaciones (IBM, Google, etc.)</li>
+            <li class="flex gap-2"><span class="bg-rose-100 text-rose-700 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">6</span>Practica comunicar resultados</li>
+          </ol>
+        </div>
+      </div>
+      <div class="space-y-4">
+        <div class="bg-white rounded-xl shadow p-5">
+          <h3 class="font-bold text-slate-800 mb-3">Roles disponibles</h3>
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <span class="bg-gray-100 px-3 py-2 rounded-lg text-center">Data Scientist</span>
+            <span class="bg-gray-100 px-3 py-2 rounded-lg text-center">Data Analyst</span>
+            <span class="bg-gray-100 px-3 py-2 rounded-lg text-center">Data Engineer</span>
+            <span class="bg-gray-100 px-3 py-2 rounded-lg text-center">ML Engineer</span>
+            <span class="bg-gray-100 px-3 py-2 rounded-lg text-center">Business Analyst</span>
+            <span class="bg-gray-100 px-3 py-2 rounded-lg text-center">Research Scientist</span>
+            <span class="bg-gray-100 px-3 py-2 rounded-lg text-center">Database Engineer</span>
+            <span class="bg-gray-100 px-3 py-2 rounded-lg text-center">Statistician</span>
+          </div>
+        </div>
+        <div class="bg-rose-50 border border-rose-200 rounded-xl p-5">
+          <h3 class="font-bold text-rose-800 mb-2">Iniciativa Women in Data Science</h3>
+          <p class="text-sm text-gray-600">Impulsada por Stanford, comprometida a inspirar y educar a científicos de datos en todo el mundo, independientemente del género, y a apoyar a las mujeres en el campo.</p>
+          <p class="text-xs text-rose-600 mt-2 font-semibold">PyLadies: comunidad internacional para mujeres en Python.</p>
+        </div>
+        <div class="bg-slate-800 text-white rounded-xl p-5">
+          <h3 class="font-bold mb-2">Hoja de ruta personalizada</h3>
+          <p class="text-sm text-gray-300">Adapta tu conjunto de habilidades al rol específico que quieres. Los recursos de entrenamiento en línea hacen posible entrar al campo sin importar tu fondo académico.</p>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="text-xl font-bold text-slate-800 mb-5 flex items-center gap-2"><span class="w-1.5 h-7 bg-rose-600 rounded-full"></span>Hoja de Ruta hacia la Ciencia de Datos</h2>
+    <p class="text-sm text-gray-500 mb-4">Fuente: IBM / Skills Network — "A Roadmap to your Data Science Journey"</p>
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
+      <div class="bg-white rounded-xl shadow p-5 border-t-4 border-rose-400">
+        <h3 class="font-bold text-rose-700 mb-2 text-sm uppercase">🧠 Características de Personalidad</h3>
+        <ul class="text-xs text-gray-600 space-y-1">
+          <li>• Curiosidad — esencial para explorar datos</li>
+          <li>• Hacer buenos argumentos basados en datos</li>
+          <li>• Usar buen juicio</li>
+          <li>• Familiaridad con plataformas de análisis</li>
+          <li>• Narrador de historias (Storyteller)</li>
+          <li>• Conocer tu área de interés (salud, IT, finanzas...)</li>
+        </ul>
+      </div>
+      <div class="bg-white rounded-xl shadow p-5 border-t-4 border-orange-400">
+        <h3 class="font-bold text-orange-700 mb-2 text-sm uppercase">🛤️ Muchas Rutas Posibles</h3>
+        <ul class="text-xs text-gray-600 space-y-1">
+          <li>• Diversos antecedentes educativos y de carrera</li>
+          <li>• El rango de datos genera desafíos que despiertan interés</li>
+          <li>• La DS es adaptable a todas las profesiones</li>
+          <li>• No hay UNA ruta correcta de entrada al campo</li>
+        </ul>
+      </div>
+      <div class="bg-white rounded-xl shadow p-5 border-t-4 border-yellow-400">
+        <h3 class="font-bold text-yellow-700 mb-2 text-sm uppercase">📊 Alfabetismo de Datos</h3>
+        <ul class="text-xs text-gray-600 space-y-1">
+          <li>• Analizar datos estructurados y no estructurados</li>
+          <li>• Entender formatos de archivo (CSV, JSON, XML)</li>
+          <li>• Bases de datos y habilidades SQL</li>
+          <li>• Big Data y Cloud computing</li>
+        </ul>
+      </div>
+      <div class="bg-white rounded-xl shadow p-5 border-t-4 border-blue-400">
+        <h3 class="font-bold text-blue-700 mb-2 text-sm uppercase">🔧 Herramientas y Técnicas</h3>
+        <ul class="text-xs text-gray-600 space-y-1">
+          <li>• Programación con Python y R</li>
+          <li>• Hadoop para Big Data</li>
+          <li>• Librerías: NumPy, Pandas, Scikit-learn</li>
+          <li>• Algoritmos de Machine Learning</li>
+          <li>• Técnicas de preprocesamiento de datos</li>
+        </ul>
+      </div>
+      <div class="bg-white rounded-xl shadow p-5 border-t-4 border-green-400">
+        <h3 class="font-bold text-green-700 mb-2 text-sm uppercase">🏗️ Habilidades Fundamentales</h3>
+        <ul class="text-xs text-gray-600 space-y-1">
+          <li>• Conocimiento estadístico</li>
+          <li>• Matemáticas: Cálculo, Álgebra Lineal</li>
+          <li>• Seleccionar, entrenar y testear modelos</li>
+          <li>• Habilidades de comunicación y presentación</li>
+        </ul>
+      </div>
+      <div class="bg-white rounded-xl shadow p-5 border-t-4 border-purple-400">
+        <h3 class="font-bold text-purple-700 mb-2 text-sm uppercase">📋 Rango de Tareas</h3>
+        <ul class="text-xs text-gray-600 space-y-1">
+          <li>• Construir motores de recomendación</li>
+          <li>• Análisis de datos y resolución de problemas</li>
+          <li>• Identificar patrones en datasets</li>
+          <li>• Utilizar múltiples fuentes de datos</li>
+          <li>• Comunicar hallazgos a stakeholders</li>
+        </ul>
+      </div>
+    </div>
+    <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 border-t-4 border-rose-500" id="quiz6">
+      <h3 class="text-xl font-bold text-slate-800 mb-1">Examen — Módulo 6</h3>
+      <div id="quiz6Questions"></div>
+      <button onclick="gradeQuiz(6)" class="mt-6 bg-rose-600 text-white font-semibold px-8 py-3 rounded-xl hover:bg-rose-700 transition">Calificar</button>
+      <div id="quiz6Result" class="mt-4 hidden"></div>
+    </div>
+    <div class="flex justify-between items-center mt-8 mb-4">
+      <button onclick="showChapter(5)" class="text-sm text-gray-500 hover:text-slate-800">← Aplicaciones</button>
+      <button onclick="showChapter(7)" class="bg-slate-800 text-white px-6 py-2 rounded-xl hover:bg-teal-800 transition text-sm font-semibold">Siguiente: Glosario →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CAP 7: GLOSARIO ===== -->
+<div class="chapter" id="ch7">
+  <section class="bg-gradient-to-r from-gray-700 to-gray-900 text-white py-16 px-4">
+    <div class="max-w-5xl mx-auto"><p class="uppercase tracking-widest text-gray-400 text-sm mb-2">Referencia</p>
+    <h1 class="text-3xl md:text-5xl font-black mb-3">Glosario</h1>
+    <p class="text-lg text-gray-300">Términos clave en Español e Inglés. Los términos subrayados en los capítulos muestran definiciones al pasar el cursor.</p></div>
+  </section>
+  <div class="max-w-5xl mx-auto px-4 py-10">
+    <div class="mb-6"><input type="text" id="glossSearch" placeholder="Buscar término... / Search term..." oninput="filterGloss()" class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:border-teal-500 text-sm"></div>
+    <div id="glossGrid" class="grid md:grid-cols-2 gap-4 mb-10"></div>
+    <div class="bg-teal-50 border border-teal-200 rounded-xl p-4 mb-4">
+      <p class="text-sm text-teal-800"><strong>Fuente:</strong> Los términos de este glosario provienen de los glosarios oficiales del curso IBM Data Science Professional Certificate (Coursera): <em>What do Data Scientists Do</em>, <em>Deep Learning and Machine Learning</em>, <em>Big Data y Minería de Datos</em>, <em>Careers and Recruiting</em>, y <em>Application Domains</em>.</p>
+    </div>
+    <div class="flex justify-between items-center mt-8 mb-4">
+      <button onclick="showChapter(6)" class="text-sm text-gray-500 hover:text-slate-800">← Carreras</button>
+      <button onclick="showChapter(8)" class="bg-indigo-600 text-white px-6 py-2 rounded-xl hover:bg-indigo-700 transition text-sm font-semibold">Vocabulario EN →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CAP 8: VOCABULARIO EN INGLÉS ===== -->
+<div class="chapter" id="ch8">
+  <section class="bg-gradient-to-r from-indigo-700 to-violet-800 text-white py-16 px-4">
+    <div class="max-w-5xl mx-auto"><p class="uppercase tracking-widest text-indigo-200 text-sm mb-2">Práctica</p>
+    <h1 class="text-3xl md:text-5xl font-black mb-3">Vocabulario en Inglés</h1>
+    <p class="text-lg text-indigo-200">Haz clic en cada tarjeta para revelar la definición en inglés. Practica en voz alta.</p></div>
+  </section>
+  <div class="max-w-5xl mx-auto px-4 py-10">
+    <p class="text-sm text-gray-500 mb-6 text-center">💡 Haz clic en la tarjeta para voltearla. Practica decir el término en inglés antes de voltear.</p>
+    <div id="flashcardsGrid" class="grid sm:grid-cols-2 md:grid-cols-3 gap-5 mb-10"></div>
+    <div class="flex justify-between items-center mt-8 mb-4">
+      <button onclick="showChapter(7)" class="text-sm text-gray-500 hover:text-slate-800">← Glosario</button>
+      <button onclick="showChapter(9)" class="bg-orange-500 text-white px-6 py-2 rounded-xl hover:bg-orange-600 transition text-sm font-semibold">Consejos Entrevistas →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CAP 9: CONSEJOS ENTREVISTAS ===== -->
+<div class="chapter" id="ch9">
+  <section class="bg-gradient-to-r from-orange-600 to-amber-700 text-white py-16 px-4">
+    <div class="max-w-5xl mx-auto"><p class="uppercase tracking-widest text-orange-200 text-sm mb-2">Carrera Profesional</p>
+    <h1 class="text-3xl md:text-5xl font-black mb-3">Consejos para Entrevistas</h1>
+    <p class="text-lg text-orange-100">Preguntas frecuentes, frases en inglés y estrategias para trabajo remoto en EE.UU. y empresas internacionales.</p></div>
+  </section>
+  <div class="max-w-5xl mx-auto px-4 py-10">
+
+    <div class="bg-amber-50 border border-amber-200 rounded-2xl p-6 mb-8">
+      <h2 class="font-bold text-amber-800 text-lg mb-2">🌎 Trabajar remotamente para USA y empresas extranjeras</h2>
+      <div class="grid md:grid-cols-3 gap-4 text-sm">
+        <div><strong class="text-amber-700">Comunica con claridad:</strong><p class="text-gray-600 mt-1">Los equipos remotos valoran la comunicación escrita clara. Practica escribir emails y documentar tu trabajo en inglés.</p></div>
+        <div><strong class="text-amber-700">Portafolio en GitHub:</strong><p class="text-gray-600 mt-1">Un repositorio con proyectos documentados en inglés es tu CV más poderoso internacionalmente.</p></div>
+        <div><strong class="text-amber-700">Plataformas de búsqueda:</strong><p class="text-gray-600 mt-1">LinkedIn, Upwork, Toptal, Remote.co, WeWorkRemotely son populares para trabajo remoto en DS.</p></div>
+      </div>
+    </div>
+
+    <h2 class="text-xl font-bold text-slate-800 mb-5">Preguntas frecuentes en entrevistas de DS</h2>
+    <div id="interviewAccordion" class="space-y-3 mb-10"></div>
+
+    <h2 class="text-xl font-bold text-slate-800 mb-5">Frases clave en inglés para entrevistas / Key Phrases</h2>
+    <div class="grid md:grid-cols-2 gap-4 mb-10">
+      <div class="bg-white rounded-xl shadow p-5">
+        <h3 class="font-bold text-teal-700 mb-3 text-sm uppercase">Hablar de experiencia</h3>
+        <div class="space-y-2 text-sm">
+          <div class="bg-gray-50 rounded p-2"><p class="text-teal-600 font-mono text-xs">"In my experience working with data..."</p><p class="text-gray-500 text-xs">En mi experiencia trabajando con datos...</p></div>
+          <div class="bg-gray-50 rounded p-2"><p class="text-teal-600 font-mono text-xs">"I used Python and Pandas to clean the dataset..."</p><p class="text-gray-500 text-xs">Usé Python y Pandas para limpiar el dataset...</p></div>
+          <div class="bg-gray-50 rounded p-2"><p class="text-teal-600 font-mono text-xs">"The model achieved an accuracy of X%..."</p><p class="text-gray-500 text-xs">El modelo alcanzó una precisión del X%...</p></div>
+          <div class="bg-gray-50 rounded p-2"><p class="text-teal-600 font-mono text-xs">"I identified a pattern that led to..."</p><p class="text-gray-500 text-xs">Identifiqué un patrón que llevó a...</p></div>
+        </div>
+      </div>
+      <div class="bg-white rounded-xl shadow p-5">
+        <h3 class="font-bold text-indigo-700 mb-3 text-sm uppercase">Hablar de resolución de problemas</h3>
+        <div class="space-y-2 text-sm">
+          <div class="bg-gray-50 rounded p-2"><p class="text-indigo-600 font-mono text-xs">"The main challenge was handling missing data..."</p><p class="text-gray-500 text-xs">El principal desafío fue manejar datos faltantes...</p></div>
+          <div class="bg-gray-50 rounded p-2"><p class="text-indigo-600 font-mono text-xs">"I approached this by first understanding the business problem..."</p><p class="text-gray-500 text-xs">Lo abordé primero entendiendo el problema de negocio...</p></div>
+          <div class="bg-gray-50 rounded p-2"><p class="text-indigo-600 font-mono text-xs">"To validate my findings, I used cross-validation..."</p><p class="text-gray-500 text-xs">Para validar mis hallazgos, usé validación cruzada...</p></div>
+          <div class="bg-gray-50 rounded p-2"><p class="text-indigo-600 font-mono text-xs">"The business impact was a X% reduction in..."</p><p class="text-gray-500 text-xs">El impacto en el negocio fue una reducción del X% en...</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex justify-between items-center mt-8 mb-4">
+      <button onclick="showChapter(8)" class="text-sm text-gray-500 hover:text-slate-800">← Vocabulario</button>
+      <button onclick="showChapter(10)" class="bg-rose-600 text-white px-6 py-2 rounded-xl hover:bg-rose-700 transition text-sm font-semibold">Registro →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CAP 10: REGISTRO ===== -->
+<div class="chapter" id="ch10">
+  <section class="bg-gradient-to-r from-rose-500 to-red-600 text-white py-16 px-4">
+    <div class="max-w-5xl mx-auto"><p class="uppercase tracking-widest text-rose-200 text-sm mb-2">Herramienta</p>
+    <h1 class="text-3xl md:text-5xl font-black mb-3">Registro de Estudios</h1></div>
+  </section>
+  <div class="max-w-5xl mx-auto px-4 py-10">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      <div class="bg-white rounded-xl shadow p-5 text-center"><div class="text-3xl font-black text-teal-600" id="statDays">0</div><div class="text-sm text-gray-500">Días estudiados</div></div>
+      <div class="bg-white rounded-xl shadow p-5 text-center"><div class="text-3xl font-black text-orange-500" id="statStreak">0</div><div class="text-sm text-gray-500">Racha actual</div></div>
+      <div class="bg-white rounded-xl shadow p-5 text-center"><div class="text-3xl font-black text-slate-800" id="statChapters">0/6</div><div class="text-sm text-gray-500">Exámenes aprobados</div></div>
+      <div class="bg-white rounded-xl shadow p-5 text-center"><div class="text-3xl font-black text-purple-600" id="statAvg">—</div><div class="text-sm text-gray-500">Promedio</div></div>
+    </div>
+    <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 mb-8">
+      <h2 class="text-xl font-bold text-slate-800 mb-4">Registrar hoy</h2>
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mb-4">
+        <label class="flex items-center gap-2 bg-gray-50 rounded-lg p-3 cursor-pointer hover:bg-gray-100"><input type="checkbox" class="study-check accent-teal-600" value="1"><span class="text-sm">Módulo 1: Definición</span></label>
+        <label class="flex items-center gap-2 bg-gray-50 rounded-lg p-3 cursor-pointer hover:bg-gray-100"><input type="checkbox" class="study-check accent-teal-600" value="2"><span class="text-sm">Módulo 2: ¿Qué Hacen?</span></label>
+        <label class="flex items-center gap-2 bg-gray-50 rounded-lg p-3 cursor-pointer hover:bg-gray-100"><input type="checkbox" class="study-check accent-teal-600" value="3"><span class="text-sm">Módulo 3: ML &amp; IA</span></label>
+        <label class="flex items-center gap-2 bg-gray-50 rounded-lg p-3 cursor-pointer hover:bg-gray-100"><input type="checkbox" class="study-check accent-teal-600" value="4"><span class="text-sm">Módulo 4: Big Data</span></label>
+        <label class="flex items-center gap-2 bg-gray-50 rounded-lg p-3 cursor-pointer hover:bg-gray-100"><input type="checkbox" class="study-check accent-teal-600" value="5"><span class="text-sm">Módulo 5: Aplicaciones</span></label>
+        <label class="flex items-center gap-2 bg-gray-50 rounded-lg p-3 cursor-pointer hover:bg-gray-100"><input type="checkbox" class="study-check accent-teal-600" value="6"><span class="text-sm">Módulo 6: Carreras</span></label>
+      </div>
+      <button onclick="saveStudyDay()" class="bg-teal-600 text-white font-semibold px-6 py-2 rounded-xl hover:bg-teal-700 transition">Guardar</button>
+      <span id="saveMsg" class="ml-3 text-sm text-teal-600 hidden">¡Guardado!</span>
+    </div>
+    <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+      <h2 class="text-xl font-bold text-slate-800 mb-4">Historial</h2>
+      <div id="studyHistory" class="space-y-2 text-sm"></div>
+      <p id="noHistory" class="text-gray-400 text-sm">No hay registros aún.</p>
+    </div>
+    <div class="mt-8"><button onclick="showChapter(0)" class="text-sm text-gray-500 hover:text-slate-800">← Inicio</button></div>
+  </div>
+</div>
+
+</main>
+<footer class="bg-slate-800 text-white/50 text-center text-xs py-6">Guía de Estudio · ¿Qué es la Ciencia de Datos? · IBM Data Science Professional Certificate</footer>
+
+<script>
+// ===== DATA =====
+const glossaryData = [
+  // === Glosario: ¿Qué Hacen los Científicos de Datos? (IBM Coursera oficial) ===
+  {es:'Valores Separados por Comas (CSV)',en:'CSV — Comma Separated Values',def:'Formato comúnmente utilizado para almacenar datos tabulares como texto plano, donde cada valor es separado por una coma o una tabulación.'},
+  {es:'Tipos de Archivos de Datos',en:'Data File Types',def:'Una configuración de archivo informático diseñada para almacenar datos de una manera específica.'},
+  {es:'Formato de Datos',en:'Data Format',def:'Cómo se codifican los datos para que puedan ser almacenados dentro de un tipo de archivo de datos.'},
+  {es:'Visualización de Datos',en:'Data Visualization',def:'Una forma visual, como un gráfico, de representar datos de manera fácilmente comprensible que facilita la identificación de tendencias en los datos.'},
+  {es:'Archivo de Texto Delimitado',en:'Delimited Text File',def:'Un archivo de texto plano donde un carácter específico separa los valores de los datos.'},
+  {es:'Lenguaje de Marcado Extensible (XML)',en:'XML — Extensible Markup Language',def:'Un lenguaje diseñado para almacenar, transferir e intercambiar datos en diversas tecnologías.'},
+  {es:'Hadoop',en:'Hadoop',def:'Marco de código abierto diseñado para almacenar y procesar grandes conjuntos de datos en clústeres de computadoras.'},
+  {es:'Notación de Objetos de JavaScript (JSON)',en:'JSON — JavaScript Object Notation',def:'Formato de datos compatible con varios lenguajes de programación para que dos aplicaciones intercambien datos estructurados.'},
+  {es:'Cuadernos Jupyter',en:'Jupyter Notebooks',def:'Entorno computacional que permite crear y compartir documentos con código, ecuaciones, visualizaciones y texto explicativo.'},
+  {es:'Vecino Más Cercano (KNN)',en:'K-Nearest Neighbor',def:'Algoritmo de ML que predice una variable objetivo basada en su similitud con otros valores en el conjunto de datos.'},
+  {es:'Redes Neuronales',en:'Neural Networks',def:'Modelo computacional que imita la estructura de las vías neuronales del cerebro humano. Toma una entrada, la procesa utilizando el aprendizaje previo y produce una salida.'},
+  {es:'Pandas',en:'Pandas',def:'Biblioteca de Python de código abierto que proporciona herramientas para trabajar con datos estructurados. Se usa para manipulación y análisis de datos.'},
+  {es:'R',en:'R',def:'Lenguaje de programación de código abierto utilizado para computación estadística, análisis de datos y visualización de datos.'},
+  {es:'Motor de Recomendación',en:'Recommendation Engine',def:'Programa que analiza la entrada del usuario como comportamientos o preferencias, y hace recomendaciones personalizadas basadas en ese análisis.'},
+  {es:'Regresión',en:'Regression',def:'Modelo estadístico que predice la relación entre una o más variables predictoras y una variable de respuesta numérica continua.'},
+  {es:'Datos Tabulares',en:'Tabular Data',def:'Datos que están organizados en filas y columnas.'},
+  {es:'XLSX',en:'XLSX',def:'El formato de archivo de hoja de cálculo de Microsoft Excel.'},
+  // === Glosario: Deep Learning y Machine Learning (IBM Coursera oficial) ===
+  {es:'Redes Neuronales Artificiales',en:'Artificial Neural Networks',def:'Colecciones de pequeñas unidades computacionales (neuronas) que procesan datos y aprenden a tomar decisiones con el tiempo.'},
+  {es:'Análisis Bayesiano',en:'Bayesian Analysis',def:'Técnica estadística que usa el teorema de Bayes para actualizar probabilidades basadas en nueva evidencia.'},
+  {es:'Perspectivas de Negocio',en:'Business Insights',def:'Información precisa generada a partir de análisis que mejora la toma de decisiones y descubre patrones ocultos en los datos.'},
+  {es:'Análisis de Clústeres',en:'Cluster Analysis',def:'Proceso de agrupar puntos de datos similares basándose en ciertas características o atributos.'},
+  {es:'Automatización de Código',en:'Coding Automation',def:'Uso de IA generativa para generar y probar código automáticamente, liberando a los científicos para tareas de más alto nivel.'},
+  {es:'Minería de Datos',en:'Data Mining',def:'Proceso de buscar y analizar datos automáticamente para descubrir patrones e insights que antes eran desconocidos.'},
+  {es:'Árboles de Decisión',en:'Decision Trees',def:'Tipo de algoritmo de ML usado para tomar decisiones mediante una estructura de árbol. Muy interpretable.'},
+  {es:'Modelos de Aprendizaje Profundo',en:'Deep Learning Models',def:'Incluyen Redes Generativas Adversarias (GANs) y Autoencoders Variacionales (VAEs) que crean nuevos datos aprendiendo de datasets grandes.'},
+  {es:'Las 5 V\'s del Big Data',en:'Five V\'s of Big Data',def:'Características del Big Data: Velocidad (Velocity), Volumen (Volume), Variedad (Variety), Veracidad (Veracity) y Valor (Value).'},
+  {es:'IA Generativa',en:'Generative AI',def:'Subconjunto de IA que crea nuevos datos (imágenes, música, texto, código) en lugar de solo analizar los existentes.'},
+  {es:'Análisis de Canasta de Mercado',en:'Market Basket Analysis',def:'Análisis de qué productos tienden a comprarse juntos. Muy usado en marketing, retail y e-commerce.'},
+  {es:'Naive Bayes',en:'Naive Bayes',def:'Algoritmo de clasificación probabilística basado en el teorema de Bayes. Simple pero efectivo para clasificación de textos y spam.'},
+  {es:'Procesamiento de Lenguaje Natural (PLN)',en:'NLP — Natural Language Processing',def:'Campo de IA que permite a las máquinas entender, generar e interactuar con el lenguaje humano. Revoluciona chatbots y creación de contenido.'},
+  {es:'Precisión vs. Recuperación',en:'Precision vs. Recall',def:'Métricas para evaluar modelos de clasificación. Precisión: exactitud de las predicciones positivas. Recuperación: qué % de positivos reales se detectaron.'},
+  {es:'Analítica Predictiva',en:'Predictive Analytics',def:'Uso de datos, algoritmos y técnicas de ML para predecir resultados o eventos futuros.'},
+  {es:'Datos Sintéticos',en:'Synthetic Data',def:'Datos generados artificialmente con propiedades similares a datos reales, para aumentar datasets y mejorar modelos.'},
+  // === Glosario: Big Data y Minería de Datos (IBM Coursera oficial) ===
+  {es:'Analítica',en:'Analytics',def:'Proceso de obtener información relevante e importante de los datos para tomar decisiones empresariales o científicas.'},
+  {es:'Big Data',en:'Big Data',def:'Colecciones de datasets masivos, complejos y de alta velocidad que requieren tecnología nueva y escalable para procesarlos.'},
+  {es:'Computación en la Nube',en:'Cloud Computing',def:'Disponibilidad bajo demanda de recursos informáticos (servidores, almacenamiento, bases de datos) sin infraestructura propia.'},
+  {es:'Director de Datos (CDO)',en:'Chief Data Officer (CDO)',def:'Ejecutivo responsable de las estrategias de gestión, gobierno y uso de datos de una organización.'},
+  {es:'Científico de Datos',en:'Data Scientist',def:'Profesional que analiza y extrae conocimiento de datos usando estadística, programación y conocimiento del dominio.'},
+  {es:'Aprendizaje Automático',en:'Machine Learning',def:'Representaciones matemáticas para procesar datos automáticamente, encontrar patrones y hacer predicciones sin programación explícita.'},
+  {es:'Tecnología Autónoma',en:'Autonomous Technology',def:'Capacidad de una máquina de tomar decisiones y llevar a cabo acciones sin intervención humana directa.'},
+  {es:'Algoritmo',en:'Algorithm',def:'Procedimiento sistemático paso a paso utilizado para resolver un problema o procesar datos de manera eficiente.'},
+  {es:'Capacidad Digital',en:'Digital Capability',def:'Capacidad de recopilar, almacenar y procesar eficientemente información en la era digital.'},
+  // === Glosario: Dominios de Aplicación de DS (IBM Coursera oficial) ===
+  {es:'Modelos Aritméticos',en:'Arithmetic Models',def:'La Ciencia de Datos usa frecuentemente modelos matemáticos para analizar datos y predecir resultados.'},
+  {es:'Estudio de Caso',en:'Case Study',def:'Análisis profundo de una instancia de un sujeto para obtener perspectivas que informan teoría, práctica o toma de decisiones.'},
+  {es:'Estrategia de Datos',en:'Data Strategy',def:'Plan que describe cómo una organización recopilará, gestionará y usará los datos para lograr sus objetivos.'},
+  {es:'Ciencia de Datos',en:'Data Science',def:'Campo que involucra la recopilación, análisis e interpretación de datos para extraer insights valiosos y tomar decisiones informadas.'},
+  // === Glosario: Carreras y Reclutamiento en DS (IBM Coursera oficial) ===
+  {es:'Habilidades Analíticas',en:'Analytical Skills',def:'La capacidad de analizar información estadística, lógica y organizadamente para resolver problemas.'},
+  {es:'Director de Sistemas de Información (CIO)',en:'Chief Information Officer (CIO)',def:'Ejecutivo responsable de los sistemas de información y las iniciativas tecnológicas de una organización.'},
+  {es:'Pensamiento Computacional',en:'Computational Thinking',def:'Descomponer problemas en partes más pequeñas y usar algoritmos, lógica y abstracción para desarrollar soluciones.'},
+  {es:'Clústeres de Datos',en:'Data Clusters',def:'Grupo de puntos de datos similares y relacionados identificados mediante algoritmos de ML.'},
+  {es:'Resumen Ejecutivo',en:'Executive Summary',def:'Sección al inicio de un reporte que resume las partes importantes del documento, incluyendo los hallazgos clave. Generalmente máx. 1 página.'},
+  {es:'Cómputo de Alto Rendimiento (HPC)',en:'High-Performance Computing (HPC)',def:'Tecnología de computadoras en red diseñada para resolver problemas complejos e intensivos computacionalmente en entornos técnicos.'},
+  {es:'Computación Matemática',en:'Mathematical Computing',def:'El uso de computadoras para calcular, simular y modelar problemas matemáticos.'},
+  {es:'Matrices',en:'Matrices',def:'Arreglo rectangular (tabular) de números. Fundamental en álgebra lineal y estadística aplicada a la ciencia de datos.'},
+  {es:'Distribuciones Estadísticas',en:'Statistical Distributions',def:'Describe el comportamiento de diferentes resultados de un dataset basado en probabilidad. La "curva de campana" (distribución normal) es la más común.'},
+  {es:'SQL — Lenguaje de Consulta Estructurado',en:'SQL — Structured Query Language',def:'Lenguaje no procedural para gestionar datos en bases de datos relacionales. Estándar ANSI desarrollado por IBM en 1974.'},
+  {es:'TCP/IP',en:'TCP/IP',def:'Protocolo de comunicación entre dispositivos conectados en una red. Forma la base de internet y las redes modernas.'},
+  // === Términos adicionales del curso ===
+  {es:'Aprendizaje Supervisado',en:'Supervised Learning',def:'Tipo de ML donde el modelo aprende de datos etiquetados con pares de entrada/salida correctos proporcionados por humanos.'},
+  {es:'Aprendizaje No Supervisado',en:'Unsupervised Learning',def:'Tipo de ML donde el modelo descubre patrones en datos NO etiquetados por sí solo. Clustering, detección de anomalías.'},
+  {es:'Aprendizaje Profundo',en:'Deep Learning',def:'Tipo especializado de ML que usa redes neuronales con múltiples capas para resolver problemas complejos como visión y lenguaje.'},
+  {es:'Inteligencia Artificial (IA)',en:'Artificial Intelligence (AI)',def:'Campo amplio que busca crear sistemas capaces de realizar tareas que normalmente requieren inteligencia humana.'},
+  {es:'Datos de Entrenamiento',en:'Training Data',def:'Conjunto de datos históricos con resultados conocidos que se usa para entrenar (enseñar) un modelo de ML.'},
+  {es:'Clustering',en:'Clustering',def:'Técnica de ML no supervisado que agrupa datos similares entre sí en grupos o clusters sin etiquetas previas.'},
+  {es:'Apache Spark',en:'Apache Spark',def:'Motor de procesamiento de Big Data diseñado para ser hasta 100x más rápido que Hadoop MapReduce al procesar en memoria (RAM).'},
+  {es:'Hallazgo / Perspectiva',en:'Insight',def:'Descubrimiento valioso obtenido del análisis de datos que lleva a una acción o decisión de negocio.'},
+  {es:'Ingeniería de Características',en:'Feature Engineering',def:'Proceso de crear nuevas variables (features) a partir de datos brutos para mejorar el rendimiento de un modelo de ML.'},
+  {es:'Clasificación',en:'Classification',def:'Modelo de ML supervisado que predice a qué categoría pertenece algo (spam/no spam, enfermo/sano).'},
+  {es:'Modelo',en:'Model',def:'Algoritmo entrenado con datos que puede hacer predicciones o tomar decisiones sobre nuevos datos no vistos.'}
+];
+
+const flashcards = [
+  {en:'Data Science',es:'Ciencia de Datos',def:'The field of extracting knowledge and insights from structured and unstructured data.',pron:'DEY-tah SY-ens'},
+  {en:'Machine Learning',es:'Aprendizaje Automático',def:'A type of AI that enables computers to learn from data without being explicitly programmed.',pron:'muh-SHEEN LER-ning'},
+  {en:'Deep Learning',es:'Aprendizaje Profundo',def:'A subset of ML using neural networks with multiple layers to learn complex patterns.',pron:'deep LER-ning'},
+  {en:'Neural Network',es:'Red Neuronal',def:'A computing system inspired by the human brain, composed of interconnected nodes.',pron:'NYOO-rul NET-werk'},
+  {en:'Big Data',es:'Grandes Datos',def:'Extremely large datasets characterized by the 5 V\'s: Velocity, Volume, Variety, Veracity, Value.',pron:'big DEY-tah'},
+  {en:'Supervised Learning',es:'Aprendizaje Supervisado',def:'ML where a human provides labeled training data with correct input-output pairs.',pron:'soo-PER-vizd LER-ning'},
+  {en:'Unsupervised Learning',es:'Aprendizaje No Supervisado',def:'ML where the model finds patterns in unlabeled data on its own.',pron:'un-soo-PER-vizd LER-ning'},
+  {en:'Regression',es:'Regresión',def:'A model that predicts a continuous numeric value (price, temperature, salary).',pron:'reh-GRESH-un'},
+  {en:'Classification',es:'Clasificación',def:'A model that predicts which category something belongs to (spam/not spam).',pron:'kla-sih-fih-KAY-shun'},
+  {en:'Insight',es:'Hallazgo / Perspectiva',def:'A valuable discovery from data analysis that leads to a decision or action.',pron:'IN-syt'},
+  {en:'Feature Engineering',es:'Ingeniería de Características',def:'The process of creating new variables from raw data to improve a model.',pron:'FEE-cher en-jih-NEER-ing'},
+  {en:'Data Mining',es:'Minería de Datos',def:'The process of discovering patterns, correlations, and anomalies in large datasets.',pron:'DEY-tah MY-ning'},
+  {en:'Clustering',es:'Agrupamiento',def:'An unsupervised ML technique that groups similar data points together.',pron:'KLUS-ter-ing'},
+  {en:'Deployment',es:'Despliegue',def:'The process of integrating a trained model into a production environment for real use.',pron:'deh-PLOY-ment'},
+  {en:'Algorithm',es:'Algoritmo',def:'A set of rules or instructions that a model follows to solve a problem or identify patterns.',pron:'AL-go-rith-um'}
+];
+
+const interviewQA = [
+  {q:'What is Data Science? / ¿Qué es la Ciencia de Datos?',cat:'Conceptual',
+   ans:'Data Science is the field of extracting knowledge and insights from structured and unstructured data through processes, algorithms, and systems. It combines statistics, programming, and domain knowledge to solve real-world problems.\n\nEn español: La Ciencia de Datos es el campo que extrae conocimiento de los datos usando estadística, programación y conocimiento del dominio.'},
+  {q:'What is the difference between AI, Machine Learning, and Deep Learning?',cat:'Conceptual',
+   ans:'AI is the broadest field — creating intelligent systems. Machine Learning is a subset of AI where models learn from data. Deep Learning is a subset of ML using neural networks with multiple layers.\n\n📊 AI ⊃ Machine Learning ⊃ Deep Learning'},
+  {q:'What are the 5 V\'s of Big Data?',cat:'Técnica',
+   ans:'Velocity (speed of data creation), Volume (scale of data), Variety (diversity of data types: structured vs unstructured), Veracity (quality and accuracy of data), and Value (ability to turn data into valuable insights).\n\nVelocidad, Volumen, Variedad, Veracidad, Valor.'},
+  {q:'What is the difference between Supervised and Unsupervised Learning?',cat:'Técnica',
+   ans:'Supervised Learning: A human provides labeled training data (input + correct output). The model learns the relationship. Used for regression and classification.\n\nUnsupervised Learning: Data is NOT labeled. The model discovers patterns on its own. Used for clustering, anomaly detection.'},
+  {q:'Tell me about a data project you worked on. / Cuéntame sobre un proyecto de datos.',cat:'Comportamental',
+   ans:'Use the STAR method: Situation (describe the problem), Task (what you needed to do), Action (steps you took: data collection, cleaning, modeling), Result (measurable outcome).\n\nEjemplo: "In my course project, I analyzed [dataset] to predict [outcome]. I cleaned the data using Python/Pandas, built a [model type], and achieved [accuracy]%. The insight showed that [key finding]."'},
+  {q:'How do you handle missing data? / ¿Cómo manejas datos faltantes?',cat:'Técnica',
+   ans:'Several strategies: 1) Remove rows/columns with many missing values. 2) Impute with mean/median/mode. 3) Use algorithms that handle missing values natively. 4) Mark as a separate "unknown" category.\n\nThe choice depends on the amount of missing data and whether it\'s missing at random.'},
+  {q:'Why do you want to work in Data Science? / ¿Por qué quieres trabajar en Ciencia de Datos?',cat:'Comportamental',
+   ans:'Be genuine and specific. Mention: curiosity about data, satisfaction in finding patterns, desire to make data-driven decisions, and the wide applicability across industries.\n\nEjemplo en inglés: "I\'m passionate about using data to uncover insights that drive real business decisions. I love the combination of technical problem-solving and communication of results to non-technical stakeholders."'},
+  {q:'What programming languages do you know for Data Science?',cat:'Técnica',
+   ans:'Python is the most widely used (libraries: Pandas, NumPy, Scikit-learn, TensorFlow). R is popular in academia and statistics. SQL is essential for querying databases. Mention your strongest language first.\n\nTip: Always mention your proficiency level honestly.'}
+];
+
+const quizData = {
+  1:[{q:'¿Qué es la Ciencia de Datos según las definiciones del curso?',opts:['Solo programación','Un proceso de usar datos para entender el mundo','Solo estadística','Una base de datos'],ans:1},
+     {q:'¿Por qué la DS es relevante HOY (y antes no lo era tanto)?',opts:['Porque hay más científicos','Herramientas baratas, software open source y datos disponibles','Solo por Python','Por las universidades'],ans:1},
+     {q:'¿En qué revista se llamó DS "el trabajo más sexy del siglo XXI"?',opts:['Forbes','MIT Review','Harvard Business Review','National Geographic'],ans:2},
+     {q:'¿Desde qué año DS es el #1 trabajo más prometedor en Glassdoor?',opts:['2010','2014','2016','2020'],ans:2},
+     {q:'Un científico de datos traduce datos en...',opts:['Bases de datos','Código','Historia / Storytelling','Gráficas únicamente'],ans:2},
+     {q:'El nombre "Data Science" surgió en los años...',opts:['1960s','1980s-90s','2000s','2010s'],ans:1}],
+  2:[{q:'¿Cuál es el entregable final de un proyecto DS?',opts:['Solo código','Un reporte estructurado','Una base de datos','Solo gráficas'],ans:1},
+     {q:'¿Cuál sección del reporte describe el proceso usado?',opts:['Resultados','Introducción','Metodología','Conclusión'],ans:2},
+     {q:'¿Qué habilidad es fundamental además de matemáticas y código?',opts:['Diseño gráfico','Comunicación y storytelling','Fotografía','Solo R'],ans:1},
+     {q:'Un ejemplo del día a día de un DS es:',opts:['Solo Excel','Análisis de 500,000 quejas de tránsito','Solo reportes','Solo SQL'],ans:1},
+     {q:'¿Qué hace que un motor de recomendación sea exitoso según el ejemplo?',opts:['Que sea complejo','Que sea simple pero eficiente y entendible para todos','Que use la última tecnología','Que sea rápido únicamente'],ans:1}],
+  3:[{q:'Machine Learning usa _____ para identificar patrones',opts:['Personas','Algoritmos (modelos)','Solo reglas','Fórmulas manuales'],ans:1},
+     {q:'En el aprendizaje supervisado, un humano proporciona...',opts:['Solo preguntas','Datos de entrada + respuestas correctas','Solo etiquetas','Solo datos'],ans:1},
+     {q:'Los modelos de Regresión predicen...',opts:['Categorías','Valores numéricos continuos','Solo sí/no','Imágenes'],ans:1},
+     {q:'Deep Learning emula...',opts:['Un árbol de decisión','El cerebro humano','La regresión','SQL'],ans:1},
+     {q:'¿Cuál es la relación correcta entre IA, ML y DL?',opts:['Son lo mismo','IA ⊃ ML ⊃ Deep Learning','ML ⊃ IA','DL ⊃ ML ⊃ IA'],ans:1},
+     {q:'El aprendizaje por refuerzo aprende por...',opts:['Datos etiquetados','Prueba y error con recompensas','Supervisión constante','Reglas escritas'],ans:1}],
+  4:[{q:'¿Cuántas V\'s tiene el Big Data?',opts:['3','4','5','7'],ans:2},
+     {q:'Veracity se refiere a...',opts:['Velocidad','Variedad','Calidad y origen de los datos','Volumen'],ans:2},
+     {q:'¿Qué herramienta es el estándar para almacenamiento distribuido de Big Data?',opts:['Excel','MySQL','Hadoop HDFS','SQL Server'],ans:2},
+     {q:'Apache Spark fue diseñado para ser más _____ que Hadoop',opts:['Barato','Rápido (procesamiento en memoria)','Grande','Simple'],ans:1},
+     {q:'Value en Big Data significa...',opts:['Precio del software','Capacidad de convertir datos en valor/beneficio','Velocidad','Número de V\'s'],ans:1},
+     {q:'2.5 quintillones de bytes se generan...',opts:['Por año','Por mes','Cada día','Por hora'],ans:2}],
+  5:[{q:'¿En qué industria se puede aplicar la Ciencia de Datos?',opts:['Solo tecnología','Solo finanzas','Todas las industrias','Solo salud'],ans:2},
+     {q:'La nube para DS ofrece principalmente...',opts:['Solo almacenamiento','Acceso a cómputo escalable sin infraestructura propia','Solo visualización','Solo Python'],ans:1},
+     {q:'Un ejemplo de DS salvando vidas es:',opts:['Netflix recommendations','Detección de enfermedades en imágenes médicas','Precios de productos','Análisis de redes sociales'],ans:1},
+     {q:'Predecir la demanda de un producto en retail es un ejemplo de:',opts:['Análisis descriptivo','Análisis prescriptivo','DS aplicada al comercio','Minería de datos únicamente'],ans:2},
+     {q:'¿Qué plataforma cloud ofrece Jupyter Notebooks para DS?',opts:['Solo IBM','Google Colab, IBM Watson, AWS SageMaker, Azure ML','Solo Google','Solo AWS'],ans:1}],
+  6:[{q:'¿En qué puesto en Glassdoor está DS desde 2016?',opts:['#5','#3','#2','#1'],ans:3},
+     {q:'¿Qué % de puestos DS listaban Python en 2019 (Glassdoor)?',opts:['25%','50%','75%+','100%'],ans:2},
+     {q:'¿Qué organización advirtió sobre la escasez de talento DS?',opts:['IBM','McKinsey Global Institute','Google','Microsoft'],ans:1},
+     {q:'Para entrar a DS, un paso clave es construir un _____ en GitHub',opts:['Curriculum','Blog','Portafolio de proyectos','Solo certificaciones'],ans:2},
+     {q:'PyLadies busca apoyar a...',opts:['Solo programadoras de Python','Solo a mujeres en Data Science','Mujeres en la comunidad open source de Python','Solo estudiantes'],ans:2},
+     {q:'Women in Data Science fue impulsada por...',opts:['MIT','Harvard','Stanford','IBM'],ans:2}]
+};
+
+// ===== RENDER =====
+function showChapter(n){
+  document.querySelectorAll('.chapter').forEach(c=>c.classList.remove('active'));
+  document.getElementById('ch'+n).classList.add('active');
+  document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active-nav'));
+  const b=document.querySelector('.nav-link[data-ch="'+n+'"]');
+  if(b)b.classList.add('active-nav');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(n===10)loadStudyData();
+}
+function closeMob(){document.getElementById('mobileMenu').classList.add('hidden');}
+
+function renderQuizzes(){
+  for(let ch=1;ch<=6;ch++){
+    const c=document.getElementById('quiz'+ch+'Questions');
+    if(!c)continue;
+    c.innerHTML=quizData[ch].map((q,i)=>
+      '<div class="mb-6"><p class="font-semibold text-gray-800 mb-3">'+(i+1)+'. '+q.q+'</p><div class="space-y-2">'+
+      q.opts.map((o,j)=>'<label class="quiz-option flex items-center gap-3 p-3 rounded-lg border border-gray-200 cursor-pointer hover:border-gray-400" data-ch="'+ch+'" data-q="'+i+'" data-opt="'+j+'"><input type="radio" name="q'+ch+'_'+i+'" value="'+j+'" class="accent-teal-600"><span class="text-sm">'+o+'</span></label>').join('')+
+      '</div></div>'
+    ).join('');
+  }
+}
+
+function gradeQuiz(ch){
+  const qs=quizData[ch]; let correct=0;
+  qs.forEach((q,i)=>{
+    const sel=document.querySelector('input[name="q'+ch+'_'+i+'"]:checked');
+    const labels=document.querySelectorAll('label[data-ch="'+ch+'"][data-q="'+i+'"]');
+    labels.forEach(l=>{l.classList.remove('correct','incorrect');});
+    if(sel){
+      const v=parseInt(sel.value);
+      if(v===q.ans){correct++;sel.closest('label').classList.add('correct');}
+      else{sel.closest('label').classList.add('incorrect');if(labels[q.ans])labels[q.ans].classList.add('correct');}
+    }
+  });
+  const pct=Math.round(correct/qs.length*100);
+  const r=document.getElementById('quiz'+ch+'Result');
+  r.classList.remove('hidden');
+  const pass=pct>=70;
+  r.innerHTML='<div class="p-4 rounded-xl '+(pass?'bg-green-50 border border-green-200':'bg-red-50 border border-red-200')+'"><p class="font-bold '+(pass?'text-green-700':'text-red-700')+' text-lg">'+correct+'/'+qs.length+' — '+pct+'%</p><p class="text-sm '+(pass?'text-green-600':'text-red-600')+'">'+(pass?'¡Aprobado! 🎉':'Necesitas 70% para aprobar. Revisa el material.')+'</p></div>';
+  const scores=JSON.parse(localStorage.getItem('ds1_scores')||'{}');
+  scores[ch]={correct,total:qs.length,pct,passed:pass};
+  localStorage.setItem('ds1_scores',JSON.stringify(scores));
+  updateProgress();
+}
+
+function updateProgress(){
+  const scores=JSON.parse(localStorage.getItem('ds1_scores')||'{}');
+  let passed=0; for(let i=1;i<=6;i++)if(scores[i]&&scores[i].passed)passed++;
+  const pct=Math.round(passed/6*100);
+  document.getElementById('globalProgress').style.width=pct+'%';
+  document.getElementById('globalProgressText').textContent=pct+'%';
+}
+
+function renderGlossary(){
+  const grid=document.getElementById('glossGrid');
+  grid.innerHTML=glossaryData.map((t,i)=>
+    '<div class="gloss-item bg-white rounded-xl shadow p-5"><div class="flex justify-between items-start mb-2"><h4 class="font-bold text-slate-800">'+t.es+'</h4><span class="text-xs bg-teal-100 text-teal-700 px-2 py-0.5 rounded-full font-mono">'+t.en+'</span></div><p class="text-sm text-gray-600">'+t.def+'</p></div>'
+  ).join('');
+}
+function filterGloss(){
+  const q=document.getElementById('glossSearch').value.toLowerCase();
+  document.querySelectorAll('.gloss-item').forEach((el,i)=>{
+    const t=glossaryData[i];
+    el.style.display=(t.es.toLowerCase().includes(q)||t.en.toLowerCase().includes(q)||t.def.toLowerCase().includes(q))?'':'none';
+  });
+}
+
+function renderFlashcards(){
+  const grid=document.getElementById('flashcardsGrid');
+  grid.innerHTML=flashcards.map((f,i)=>
+    '<div class="flashcard" onclick="this.classList.toggle(\'flipped\')" title="Clic para voltear">'+
+    '<div class="fc-inner">'+
+    '<div class="fc-front bg-teal-600 text-white">'+
+      '<p class="text-xs text-teal-200 mb-1">🇺🇸 Inglés — haz clic para ver definición</p>'+
+      '<h3 class="text-lg font-black">'+f.en+'</h3>'+
+      '<p class="text-teal-200 text-sm mt-1">🇪🇸 '+f.es+'</p>'+
+      '<p class="text-xs text-teal-300 mt-2 italic">🔊 '+f.pron+'</p>'+
+    '</div>'+
+    '<div class="fc-back bg-slate-800 text-white">'+
+      '<p class="text-xs text-gray-400 mb-2 uppercase">Definition</p>'+
+      '<p class="text-sm text-gray-200">'+f.def+'</p>'+
+    '</div>'+
+    '</div></div>'
+  ).join('');
+}
+
+function renderInterviewAccordion(){
+  const div=document.getElementById('interviewAccordion');
+  const catColors={Conceptual:'bg-teal-100 text-teal-800',Técnica:'bg-blue-100 text-blue-800',Comportamental:'bg-orange-100 text-orange-800'};
+  div.innerHTML=interviewQA.map((item,i)=>
+    '<div class="acc-item bg-white rounded-xl shadow overflow-hidden">'+
+    '<button class="w-full flex items-center justify-between p-5 text-left hover:bg-gray-50 transition" onclick="this.closest(\'.acc-item\').classList.toggle(\'open\')">'+
+    '<div class="flex items-start gap-3"><span class="inline-block '+(catColors[item.cat]||'bg-gray-100 text-gray-700')+' text-xs px-2 py-0.5 rounded-full font-semibold flex-shrink-0 mt-0.5">'+item.cat+'</span>'+
+    '<span class="font-semibold text-sm text-slate-800">'+item.q+'</span></div>'+
+    '<svg class="acc-arrow w-5 h-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>'+
+    '</button>'+
+    '<div class="acc-body"><div class="px-5 pb-5 text-sm text-gray-600 whitespace-pre-line border-t border-gray-100 pt-4">'+item.ans+'</div></div>'+
+    '</div>'
+  ).join('');
+}
+
+function saveStudyDay(){
+  const checks=document.querySelectorAll('.study-check:checked');
+  if(!checks.length)return;
+  const chapters=Array.from(checks).map(c=>parseInt(c.value));
+  const today=new Date().toISOString().split('T')[0];
+  const log=JSON.parse(localStorage.getItem('ds1_log')||'[]');
+  const idx=log.findIndex(e=>e.date===today);
+  if(idx>=0)log[idx].chapters=[...new Set([...log[idx].chapters,...chapters])];
+  else log.push({date:today,chapters});
+  localStorage.setItem('ds1_log',JSON.stringify(log));
+  document.getElementById('saveMsg').classList.remove('hidden');
+  setTimeout(()=>document.getElementById('saveMsg').classList.add('hidden'),2000);
+  loadStudyData();
+}
+
+function loadStudyData(){
+  const log=JSON.parse(localStorage.getItem('ds1_log')||'[]');
+  const scores=JSON.parse(localStorage.getItem('ds1_scores')||'{}');
+  document.getElementById('statDays').textContent=log.length;
+  let streak=0;const today=new Date();
+  for(let i=0;i<365;i++){const d=new Date(today);d.setDate(d.getDate()-i);if(log.some(e=>e.date===d.toISOString().split('T')[0]))streak++;else if(i>0)break;}
+  document.getElementById('statStreak').textContent=streak;
+  let passed=0,totalPct=0,count=0;
+  for(let i=1;i<=6;i++)if(scores[i]){count++;totalPct+=scores[i].pct;if(scores[i].passed)passed++;}
+  document.getElementById('statChapters').textContent=passed+'/6';
+  document.getElementById('statAvg').textContent=count>0?Math.round(totalPct/count)+'%':'—';
+  const h=document.getElementById('studyHistory'),nh=document.getElementById('noHistory');
+  if(!log.length){nh.classList.remove('hidden');h.innerHTML='';return;}
+  nh.classList.add('hidden');
+  h.innerHTML=[...log].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,30).map(e=>
+    '<div class="flex items-center justify-between bg-gray-50 rounded-lg px-4 py-3"><span class="font-semibold text-slate-800">'+e.date+'</span>'+
+    '<div class="flex flex-wrap gap-1">'+e.chapters.sort().map(c=>'<span class="bg-teal-100 text-teal-700 text-xs px-2 py-0.5 rounded-full">Módulo '+c+'</span>').join('')+'</div></div>'
+  ).join('');
+  const ts=new Date().toISOString().split('T')[0];
+  const te=log.find(e=>e.date===ts);
+  if(te)document.querySelectorAll('.study-check').forEach(cb=>{if(te.chapters.includes(parseInt(cb.value)))cb.checked=true;});
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  renderQuizzes();
+  renderGlossary();
+  renderFlashcards();
+  renderInterviewAccordion();
+  updateProgress();
+});
+</script>
+</body>
+</html>

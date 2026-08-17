@@ -1,0 +1,49 @@
+Welcome to this course about
+tools for data science. This course is designed for all learners who want to
+become data scientists. As a data scientist, you will be working with data, and this course will provide
+you with knowledge about various tools that
+you can use to analyze and derive conclusions. You can go through this course with or without
+programming knowledge. Now, a data scientist's tool
+kit consists of many tools, and in this course,
+you will explore a variety of them in
+the following modules. Module 1, overview of
+data science tools. Module 2, languages
+of data science. Module 3, libraries, APIs, datasets, and models. Module 4, Jupyter Project. Module 5, RStudio and GitHub. Module 6, final project, create a Jupyter Notebook. In Module 1, you will learn about the
+different categories of data science tools and examples of open source and commercial offerings
+in each category. In addition, you will learn
+how the tools overlap in functionality and what
+their pros and cons are. Module 2 will give
+you an overview of the commonly used
+languages that are available in data
+science like Python, R, Scala, Java, Julia, and SQL, and what
+they are used for. In the third module, you will
+learn about libraries that contain built in modules providing different
+functionalities. You will also learn that an application
+programming interface or API allows communication
+between two pieces of software. Finally, you will learn how machine learning or
+ML uses algorithms, also known as models, to identify patterns
+in the data. In Module 4, you will learn about
+Project Jupyter, one of the most commonly
+used environments among data scientists. You will explore the
+three main applications of Project Jupyter:
+Jupyter Notebook, JupyterLab, and JupyterLite. In addition, you will
+be introduced to commercial Jupyter based
+applications such as IBM Watson Studio
+and Google Colab; and this module also
+gives an overview of Jupyter distributions
+that can be installed on your own
+system like Anaconda. Module 5 will start with an introduction
+to R and RStudio. You will learn about the different R
+visualization packages and how to create visual charts
+using the plot function. In addition, you will
+learn about GitHub, a popular version
+control platform that data scientists can use for sharing their projects and showcasing their portfolios. In Module 6, you will work on your
+final project in which you will create and share
+your Jupyter Notebook. There's a lot to cover here. To get the most
+from this course, complete viewing each video, complete all hands-on labs, and check your learning
+with each quiz. We are very happy to
+have you with us as you start your tools for
+data science journey, if you have any trouble with
+any of the course material, please don't hesitate to contact us in the
+discussion forum. So let's get started
+and good luck.

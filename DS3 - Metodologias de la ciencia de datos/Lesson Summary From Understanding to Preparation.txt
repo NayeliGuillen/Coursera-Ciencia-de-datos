@@ -1,0 +1,34 @@
+Lesson Summary: From Understanding to Preparation
+Congratulations! You have completed this lesson. At this point in the course, you know:
+
+ The Data Understanding stage encompasses all activities related to constructing the data set and answers the question as to whether the data you collected represents the problem to be solved. 
+
+ During the Data Understanding stage, scientists might use descriptive statistics, predictive statistics, both. 
+
+ Data scientists commonly apply first, univariates, and other statistics on each variable, such as mean, median, minimum, maximum, standard deviation, pairwise correlation, and histograms. 
+
+ Data scientists also use univariates, statistics, and histograms to assess data quality. 
+
+Data Understanding and Preparation
+Data Understanding and Iterative Assessment
+
+The significant role of data assessment and effective preparation techniques for achieving successful analytical outcomes.
+
+Importance of Understanding
+Data understanding assesses the quality and significance of data components. Uses visualizations and descriptive statistics.
+
+Assessment and Iteration
+Iterations refine both problem definition and collection methods.
+
+Data Preparation
+It involves transforming data by addressing issues, such as missing values, formatting, duplicates, and feature engineering. This sets the stage for effective model building and analysis.
+
+Efficiency and Quality
+This involves automating processes and prioritizing modeling and problem-solving. Feature engineering and text analysis enhance quality and performance. The focus should be on ensuring precise and reliable outcomes.
+
+Key Takeaways
+ During the Data Preparation stage, data scientists must address missing or invalid values, remove duplicates, and validate that the data is properly formatted. 
+
+ Feature engineering, also part of the Data Preparation stage, uses domain knowledge of the data to create features that make the machine learning algorithms work. 
+
+ Text analysis during the Data Preparation stage is critical for validating that the proper groupings are set and that the programming is not overlooking hidden data. 

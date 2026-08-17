@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Metodologías de Ciencia de Datos — Guía de Estudio</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        primary: '#1d3557',
+        accent: '#2d6a4f',
+        warm: '#e76f51',
+        gold: '#e9c46a',
+        sky2: '#457b9d',
+        light: '#f1faee',
+      }
+    }
+  }
+}
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+  body { font-family: 'Inter', system-ui, sans-serif; }
+  .chapter { display: none; }
+  .chapter.active { display: block; }
+  .nav-link.active-nav { background: rgba(45,106,79,0.15); color: #2d6a4f; font-weight: 600; }
+  .etapa-card .etapa-body { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
+  .etapa-card.open .etapa-body { max-height: 2000px; }
+  .etapa-card .arrow { transition: transform 0.3s; }
+  .etapa-card.open .arrow { transform: rotate(180deg); }
+  .quiz-option { transition: all 0.2s; }
+  .quiz-option:hover { transform: translateX(4px); }
+  .quiz-option.correct { background: #d1fae5 !important; border-color: #10b981 !important; }
+  .quiz-option.incorrect { background: #fee2e2 !important; border-color: #ef4444 !important; }
+  html { scroll-behavior: smooth; }
+</style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+<!-- CROSS-NAV BAR -->
+<div style="position:fixed;top:0;left:0;right:0;z-index:60;background:#1e293b;color:white;font-size:12px;height:32px;display:flex;align-items:center;justify-content:center;gap:16px;padding:0 16px;">
+  <a href="index.html" style="color:#fbbf24;font-weight:600;text-decoration:none;">Inicio</a>
+  <a href="DS1-Que-es-la-ciencia-de-datos.html" style="color:#2dd4bf;text-decoration:none;">DS1 — Que es la CD</a>
+  <a href="DS2-Herramientas-de-la-ciencia-de-datos.html" style="color:#c4b5fd;text-decoration:none;">DS2 — Herramientas</a>
+  <span style="color:#6ee7b7;font-weight:700;border-bottom:2px solid #6ee7b7;">DS3</span>
+</div>
+
+<!-- NAVBAR -->
+<nav style="top:32px;" class="fixed left-0 right-0 bg-white/95 backdrop-blur shadow-sm z-50 border-b border-gray-200">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="flex items-center justify-between h-14">
+      <div class="flex items-center gap-2">
+        <span class="text-emerald-700 font-bold text-lg">DS</span>
+        <span class="hidden sm:inline text-sm font-semibold text-slate-800">Metodologías de Ciencia de Datos</span>
+      </div>
+      <div class="hidden md:flex items-center gap-2 flex-1 max-w-xs mx-6">
+        <div class="w-full bg-gray-200 rounded-full h-2">
+          <div id="globalProgress" class="bg-emerald-600 h-2 rounded-full transition-all duration-500" style="width:0%"></div>
+        </div>
+        <span id="globalProgressText" class="text-xs text-gray-500 whitespace-nowrap">0%</span>
+      </div>
+      <button onclick="document.getElementById('mobileMenu').classList.toggle('hidden')" class="md:hidden p-2 rounded-lg hover:bg-gray-100">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+      <div class="hidden md:flex items-center gap-1 text-sm">
+        <button onclick="showChapter(0)" class="nav-link active-nav px-3 py-1.5 rounded-lg hover:bg-gray-100 transition" data-ch="0">Inicio</button>
+        <button onclick="showChapter(1)" class="nav-link px-3 py-1.5 rounded-lg hover:bg-gray-100 transition" data-ch="1">10 Etapas</button>
+        <button onclick="showChapter(2)" class="nav-link px-3 py-1.5 rounded-lg hover:bg-gray-100 transition" data-ch="2">Enfoque</button>
+        <button onclick="showChapter(3)" class="nav-link px-3 py-1.5 rounded-lg hover:bg-gray-100 transition" data-ch="3">ROC</button>
+        <button onclick="showChapter(4)" class="nav-link px-3 py-1.5 rounded-lg hover:bg-gray-100 transition" data-ch="4">Churn</button>
+        <button onclick="showChapter(5)" class="nav-link px-3 py-1.5 rounded-lg hover:bg-gray-100 transition" data-ch="5">CRISP-DM</button>
+        <button onclick="showChapter(6)" class="nav-link px-3 py-1.5 rounded-lg hover:bg-gray-100 transition" data-ch="6">Storytelling</button>
+        <button onclick="showChapter(7)" class="nav-link px-3 py-1.5 rounded-lg hover:bg-gray-100 transition" data-ch="7">Glosario</button>
+        <button onclick="showChapter(8)" class="nav-link px-3 py-1.5 rounded-lg hover:bg-gray-100 transition text-orange-600 font-semibold" data-ch="8">Registro</button>
+      </div>
+    </div>
+  </div>
+  <div id="mobileMenu" class="hidden md:hidden bg-white border-t px-4 py-2 space-y-1">
+    <button onclick="showChapter(0);closeMob()" class="block w-full text-left px-3 py-2 rounded hover:bg-gray-100 text-sm">Inicio</button>
+    <button onclick="showChapter(1);closeMob()" class="block w-full text-left px-3 py-2 rounded hover:bg-gray-100 text-sm">Cap 1: 10 Etapas</button>
+    <button onclick="showChapter(2);closeMob()" class="block w-full text-left px-3 py-2 rounded hover:bg-gray-100 text-sm">Cap 2: Enfoque Analítico</button>
+    <button onclick="showChapter(3);closeMob()" class="block w-full text-left px-3 py-2 rounded hover:bg-gray-100 text-sm">Cap 3: Árbol / ROC</button>
+    <button onclick="showChapter(4);closeMob()" class="block w-full text-left px-3 py-2 rounded hover:bg-gray-100 text-sm">Cap 4: Churn</button>
+    <button onclick="showChapter(5);closeMob()" class="block w-full text-left px-3 py-2 rounded hover:bg-gray-100 text-sm">Cap 5: CRISP-DM</button>
+    <button onclick="showChapter(6);closeMob()" class="block w-full text-left px-3 py-2 rounded hover:bg-gray-100 text-sm">Cap 6: Storytelling</button>
+    <button onclick="showChapter(7);closeMob()" class="block w-full text-left px-3 py-2 rounded hover:bg-gray-100 text-sm">Cap 7: Glosario</button>
+    <button onclick="showChapter(8);closeMob()" class="block w-full text-left px-3 py-2 rounded hover:bg-gray-100 text-sm text-orange-600 font-semibold">Registro de Estudios</button>
+  </div>
+</nav>
+
+<main class="pt-24">
+
+<!-- ========== INICIO ========== -->
+<div class="chapter active" id="ch0">
+  <section class="bg-gradient-to-br from-slate-800 via-sky-900 to-emerald-800 text-white py-20 px-4">
+    <div class="max-w-5xl mx-auto text-center">
+      <p class="uppercase tracking-widest text-emerald-300/70 text-sm mb-4">Guía de Estudio Completa</p>
+      <h1 class="text-4xl md:text-6xl font-black mb-4">Metodologías de<br>Ciencia de Datos</h1>
+      <p class="text-lg text-gray-300 max-w-2xl mx-auto mb-8">Un proceso iterativo y estructurado para resolver problemas de negocio con datos. Certificado Profesional IBM.</p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <button onclick="showChapter(1)" class="bg-white text-slate-800 font-semibold px-6 py-3 rounded-xl hover:bg-gray-100 transition">Comenzar a estudiar</button>
+        <button onclick="showChapter(8)" class="border-2 border-white/50 text-white font-semibold px-6 py-3 rounded-xl hover:bg-white/10 transition">Ver mi progreso</button>
+      </div>
+    </div>
+  </section>
+  <section class="max-w-5xl mx-auto -mt-10 px-4 mb-12">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="bg-white rounded-xl shadow-lg p-6 text-center"><div class="text-3xl font-black text-emerald-700">10</div><div class="text-sm text-gray-500 mt-1">Etapas Clave</div></div>
+      <div class="bg-white rounded-xl shadow-lg p-6 text-center"><div class="text-3xl font-black text-orange-500">70-90%</div><div class="text-sm text-gray-500 mt-1">Tiempo en preparación</div></div>
+      <div class="bg-white rounded-xl shadow-lg p-6 text-center"><div class="text-3xl font-black text-slate-800">CRISP-DM</div><div class="text-sm text-gray-500 mt-1">Estándar de la industria</div></div>
+      <div class="bg-white rounded-xl shadow-lg p-6 text-center"><div class="text-3xl font-black text-sky-600">7</div><div class="text-sm text-gray-500 mt-1">Capítulos con examen</div></div>
+    </div>
+  </section>
+  <section class="max-w-5xl mx-auto px-4 pb-16">
+    <h2 class="text-2xl font-bold text-slate-800 mb-6 text-center">Contenido del Curso</h2>
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div onclick="showChapter(1)" class="cursor-pointer bg-white rounded-xl shadow hover:shadow-lg transition p-6 border-l-4 border-emerald-600"><span class="text-xs font-bold text-emerald-600 uppercase">Cap 1</span><h3 class="font-bold mt-1">Las 10 Etapas</h3><p class="text-sm text-gray-500 mt-1">Caso hospital completo.</p></div>
+      <div onclick="showChapter(2)" class="cursor-pointer bg-white rounded-xl shadow hover:shadow-lg transition p-6 border-l-4 border-sky-600"><span class="text-xs font-bold text-sky-600 uppercase">Cap 2</span><h3 class="font-bold mt-1">Enfoque Analítico</h3><p class="text-sm text-gray-500 mt-1">5 tipos de enfoque.</p></div>
+      <div onclick="showChapter(3)" class="cursor-pointer bg-white rounded-xl shadow hover:shadow-lg transition p-6 border-l-4 border-orange-500"><span class="text-xs font-bold text-orange-500 uppercase">Cap 3</span><h3 class="font-bold mt-1">Árbol / Curva ROC</h3><p class="text-sm text-gray-500 mt-1">Errores y costos.</p></div>
+      <div onclick="showChapter(4)" class="cursor-pointer bg-white rounded-xl shadow hover:shadow-lg transition p-6 border-l-4 border-purple-500"><span class="text-xs font-bold text-purple-500 uppercase">Cap 4</span><h3 class="font-bold mt-1">Churn / Threshold</h3><p class="text-sm text-gray-500 mt-1">Ratio X:1.</p></div>
+      <div onclick="showChapter(5)" class="cursor-pointer bg-white rounded-xl shadow hover:shadow-lg transition p-6 border-l-4 border-blue-500"><span class="text-xs font-bold text-blue-500 uppercase">Cap 5</span><h3 class="font-bold mt-1">CRISP-DM</h3><p class="text-sm text-gray-500 mt-1">6 vs 10 etapas.</p></div>
+      <div onclick="showChapter(6)" class="cursor-pointer bg-white rounded-xl shadow hover:shadow-lg transition p-6 border-l-4 border-yellow-500"><span class="text-xs font-bold text-yellow-600 uppercase">Cap 6</span><h3 class="font-bold mt-1">Storytelling</h3><p class="text-sm text-gray-500 mt-1">Técnica ¿Y qué?</p></div>
+      <div onclick="showChapter(7)" class="cursor-pointer bg-white rounded-xl shadow hover:shadow-lg transition p-6 border-l-4 border-gray-400"><span class="text-xs font-bold text-gray-500 uppercase">Cap 7</span><h3 class="font-bold mt-1">Glosario y Cierre</h3><p class="text-sm text-gray-500 mt-1">Fórmula del éxito.</p></div>
+      <div onclick="showChapter(8)" class="cursor-pointer bg-white rounded-xl shadow hover:shadow-lg transition p-6 border-l-4 border-orange-500"><span class="text-xs font-bold text-orange-500 uppercase">Tool</span><h3 class="font-bold mt-1">Registro de Estudios</h3><p class="text-sm text-gray-500 mt-1">Progreso y racha.</p></div>
+    </div>
+  </section>
+</div>
+
+<!-- ========== CAP 1: LAS 10 ETAPAS ========== -->
+<div class="chapter" id="ch1">
+  <section class="bg-gradient-to-r from-emerald-700 to-emerald-900 text-white py-16 px-4"><div class="max-w-5xl mx-auto"><p class="uppercase tracking-widest text-emerald-300 text-sm mb-2">Capítulo 1</p><h1 class="text-3xl md:text-5xl font-black mb-3">Las 10 Etapas de la Metodología DS</h1><p class="text-lg text-emerald-200 max-w-3xl">Cada etapa responde una pregunta clave y alimenta a la siguiente.</p></div></section>
+  <div class="max-w-5xl mx-auto px-4 py-10">
+    <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 md:p-8 mb-10">
+      <p class="uppercase tracking-wider text-xs text-slate-400 font-bold mb-2">Caso de Estudio</p>
+      <h2 class="text-xl font-bold text-slate-800 mb-3">Hospital: Predicción de Readmisión por Insuficiencia Cardíaca</h2>
+      <p class="text-gray-600 mb-6">Predecir qué pacientes con insuficiencia cardíaca serán readmitidos, para intervenir antes.</p>
+      <div class="grid md:grid-cols-3 gap-4">
+        <div class="bg-white rounded-xl p-4 border-l-4 border-orange-500"><h4 class="font-bold text-orange-600 text-sm uppercase mb-1">Problema</h4><p class="text-sm text-gray-600">Reducir readmisiones hospitalarias innecesarias y costosas.</p></div>
+        <div class="bg-white rounded-xl p-4 border-l-4 border-emerald-600"><h4 class="font-bold text-emerald-600 text-sm uppercase mb-1">Enfoque</h4><p class="text-sm text-gray-600">Clasificación con árbol de decisión. "¿SÍ o NO se readmitirá?"</p></div>
+        <div class="bg-white rounded-xl p-4 border-l-4 border-yellow-500"><h4 class="font-bold text-yellow-700 text-sm uppercase mb-1">¿Por qué árbol?</h4><p class="text-sm text-gray-600">Accesible para clínicos. Reglas claras y transparentes.</p></div>
+      </div>
+    </div>
+    <div class="mb-10 text-center"><img src="images/image1.png" alt="Data Requirements" class="rounded-xl shadow-lg mx-auto max-w-full md:max-w-2xl"><p class="text-xs text-gray-400 mt-2">IBM Data Science Methodology</p></div>
+    <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-2"><span class="w-1.5 h-8 bg-emerald-600 rounded-full"></span>Las 10 Etapas</h2>
+    <div id="etapasContainer"></div>
+    <div class="bg-gradient-to-r from-slate-800 to-sky-900 text-white rounded-2xl p-6 mt-10 mb-10">
+      <h3 class="font-bold text-lg mb-3">El proceso NO es lineal — es iterativo</h3>
+      <div class="flex flex-wrap gap-2 items-center text-sm mb-4">
+        <span class="bg-white/20 px-3 py-1 rounded-full">Negocio</span><span class="text-white/50">→</span><span class="bg-white/20 px-3 py-1 rounded-full">Enfoque</span><span class="text-white/50">→</span><span class="bg-white/20 px-3 py-1 rounded-full">Requisitos</span><span class="text-white/50">→</span><span class="bg-white/20 px-3 py-1 rounded-full">Recolección</span><span class="text-white/50">→</span><span class="bg-white/20 px-3 py-1 rounded-full">Comprensión</span><span class="text-white/50">→</span><span class="bg-white/20 px-3 py-1 rounded-full">Preparación</span><span class="text-white/50">→</span><span class="bg-white/20 px-3 py-1 rounded-full">Modelado</span><span class="text-white/50">→</span><span class="bg-white/20 px-3 py-1 rounded-full">Evaluación</span><span class="text-white/50">→</span><span class="bg-white/20 px-3 py-1 rounded-full">Despliegue</span><span class="text-white/50">→</span><span class="bg-white/20 px-3 py-1 rounded-full">Retroalimentación</span><span>↺</span>
+      </div>
+      <p class="text-sm text-white/70">En cualquier etapa puedes volver atrás. Esto es normal y esperado.</p>
+    </div>
+    <div class="bg-white rounded-2xl shadow-lg p-6 mb-10 border border-emerald-200">
+      <h3 class="text-xl font-bold text-slate-800 mb-4">Flight to Risk Model</h3>
+      <div class="grid md:grid-cols-3 gap-4">
+        <div class="bg-gray-50 rounded-lg p-4"><h4 class="font-semibold text-sm mb-2">¿Qué es?</h4><p class="text-sm text-gray-600">Modelo que se enfoca automáticamente en pacientes de mayor riesgo. Filtra la población y pone en el radar solo a quienes necesitan intervención urgente.</p></div>
+        <div class="bg-emerald-50 rounded-lg p-4"><h4 class="font-semibold text-sm text-emerald-700 mb-2">Ejemplo</h4><p class="text-sm text-gray-600">De 500 pacientes, identifica los 47 con mayor probabilidad de readmisión. El equipo se enfoca solo en ellos.</p></div>
+        <div class="bg-yellow-50 rounded-lg p-4"><h4 class="font-semibold text-sm text-yellow-700 mb-2">Analogía</h4><p class="text-sm text-gray-600">Salvavidas con binoculares inteligentes que resaltan solo a quienes muestran señales de peligro.</p></div>
+      </div>
+      <p class="mt-4 text-sm italic text-gray-500 border-l-4 border-emerald-300 pl-4">"Entre más conozcas, más querrás conocer." — John Rollins</p>
+    </div>
+    <div class="text-center mb-10"><img src="images/image5.png" alt="Cohort Study" class="rounded-xl shadow mx-auto max-w-full md:max-w-2xl"></div>
+    <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 border-t-4 border-emerald-600" id="quiz1"><h3 class="text-xl font-bold text-slate-800 mb-1">Examen — Capítulo 1</h3><p class="text-sm text-gray-500 mb-6">Las 10 etapas.</p><div id="quiz1Questions"></div><button onclick="gradeQuiz(1)" class="mt-6 bg-emerald-600 text-white font-semibold px-8 py-3 rounded-xl hover:bg-emerald-700 transition">Calificar</button><div id="quiz1Result" class="mt-4 hidden"></div></div>
+    <div class="flex justify-between items-center mt-8 mb-4"><button onclick="showChapter(0)" class="text-sm text-gray-500 hover:text-slate-800">← Inicio</button><button onclick="showChapter(2)" class="bg-slate-800 text-white px-6 py-2 rounded-xl hover:bg-sky-800 transition text-sm font-semibold">Siguiente: Enfoque →</button></div>
+  </div>
+</div>
+
+<!-- ========== CAP 2: ENFOQUE ANALÍTICO ========== -->
+<div class="chapter" id="ch2">
+  <section class="bg-gradient-to-r from-sky-700 to-blue-800 text-white py-16 px-4"><div class="max-w-5xl mx-auto"><p class="uppercase tracking-widest text-blue-200 text-sm mb-2">Capítulo 2</p><h1 class="text-3xl md:text-5xl font-black mb-3">Enfoque Analítico</h1><p class="text-lg text-blue-100">El tipo de pregunta determina la herramienta.</p></div></section>
+  <div class="max-w-5xl mx-auto px-4 py-10">
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
+      <div class="bg-white rounded-xl shadow p-6 border-t-4 border-blue-400"><h3 class="font-bold text-blue-600 text-lg mb-1">Descriptivo</h3><p class="text-sm italic text-gray-500 mb-3">"¿Cuál es la situación actual?"</p><p class="text-sm text-gray-600 mb-2"><strong>Técnicas:</strong> agregación, minería, dashboards.</p><div class="bg-blue-50 rounded-lg p-3"><p class="text-xs text-gray-600"><strong>Ej:</strong> Resumen de producción diaria, reportes de defectos.</p></div></div>
+      <div class="bg-white rounded-xl shadow p-6 border-t-4 border-orange-400"><h3 class="font-bold text-orange-600 text-lg mb-1">Diagnóstico</h3><p class="text-sm italic text-gray-500 mb-3">"¿Por qué ocurrió?"</p><p class="text-sm text-gray-600 mb-2"><strong>Técnicas:</strong> correlaciones, desglose, patrones.</p><div class="bg-orange-50 rounded-lg p-3"><p class="text-xs text-gray-600"><strong>Ej:</strong> ¿Por qué bajaron ventas? ¿Por qué más defectos?</p></div></div>
+      <div class="bg-white rounded-xl shadow p-6 border-t-4 border-green-400"><h3 class="font-bold text-green-600 text-lg mb-1">Predictivo</h3><p class="text-sm italic text-gray-500 mb-3">"¿Qué es probable que ocurra?"</p><p class="text-sm text-gray-600 mb-2"><strong>Técnicas:</strong> regresión, series de tiempo, ML.</p><div class="bg-green-50 rounded-lg p-3"><p class="text-xs text-gray-600"><strong>Ej:</strong> Forecast de demanda, predicción de readmisión.</p></div></div>
+      <div class="bg-white rounded-xl shadow p-6 border-t-4 border-purple-400"><h3 class="font-bold text-purple-600 text-lg mb-1">Prescriptivo</h3><p class="text-sm italic text-gray-500 mb-3">"¿Qué debemos hacer?"</p><p class="text-sm text-gray-600 mb-2"><strong>Técnicas:</strong> optimización, simulación, escenarios.</p><div class="bg-purple-50 rounded-lg p-3"><p class="text-xs text-gray-600"><strong>Ej:</strong> ¿Cuántas piezas producir? ¿Qué precio maximiza margen?</p></div></div>
+      <div class="bg-white rounded-xl shadow p-6 border-t-4 border-red-400"><h3 class="font-bold text-red-600 text-lg mb-1">Clasificación</h3><p class="text-sm italic text-gray-500 mb-3">"¿A qué categoría pertenece?"</p><p class="text-sm text-gray-600 mb-2"><strong>Técnicas:</strong> regresión logística, árbol, SVM, redes neuronales.</p><div class="bg-red-50 rounded-lg p-3"><p class="text-xs text-gray-600"><strong>Ej:</strong> ¿Defectuosa? ¿Spam? ¿Se readmitirá?</p></div></div>
+    </div>
+    <div class="text-center mb-10"><img src="images/image10.png" alt="Predictive vs Descriptive" class="rounded-xl shadow mx-auto max-w-full md:max-w-2xl"><p class="text-xs text-gray-400 mt-2">Predictivo vs Descriptivo</p></div>
+    <div class="grid md:grid-cols-2 gap-6 mb-10">
+      <div class="bg-white rounded-xl shadow p-6"><h3 class="font-bold text-slate-800 mb-3">Modelo Predictivo</h3><p class="text-sm text-gray-600">Genera probabilidad de resultado futuro. Necesita datos históricos.</p></div>
+      <div class="bg-white rounded-xl shadow p-6"><h3 class="font-bold text-slate-800 mb-3">Modelo Descriptivo</h3><p class="text-sm text-gray-600">Muestra patrones y relaciones. Clustering, reglas de asociación, segmentación.</p></div>
+    </div>
+    <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 border-t-4 border-sky-600" id="quiz2"><h3 class="text-xl font-bold text-slate-800 mb-1">Examen — Capítulo 2</h3><div id="quiz2Questions"></div><button onclick="gradeQuiz(2)" class="mt-6 bg-sky-600 text-white font-semibold px-8 py-3 rounded-xl hover:bg-blue-700 transition">Calificar</button><div id="quiz2Result" class="mt-4 hidden"></div></div>
+    <div class="flex justify-between items-center mt-8 mb-4"><button onclick="showChapter(1)" class="text-sm text-gray-500 hover:text-slate-800">← 10 Etapas</button><button onclick="showChapter(3)" class="bg-slate-800 text-white px-6 py-2 rounded-xl hover:bg-sky-800 transition text-sm font-semibold">Siguiente: ROC →</button></div>
+  </div>
+</div>
+
+<!-- ========== CAP 3: ÁRBOL DE DECISIÓN ========== -->
+<div class="chapter" id="ch3">
+  <section class="bg-gradient-to-r from-gray-900 to-gray-700 text-white py-16 px-4"><div class="max-w-5xl mx-auto"><p class="uppercase tracking-widest text-gray-400 text-sm mb-2">Capítulo 3</p><h1 class="text-3xl md:text-5xl font-black mb-3">Árbol de Decisión:<br><span class="text-red-400">Errores</span> vs Costos y <span class="text-yellow-400">Curva ROC</span></h1><p class="text-lg text-gray-300">La precisión general no lo es todo.</p></div></section>
+  <div class="max-w-5xl mx-auto px-4 py-10">
+    <div class="grid md:grid-cols-2 gap-6 mb-10">
+      <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-red-500"><p class="text-xs font-bold text-red-500 uppercase mb-1">Error Tipo I</p><h3 class="text-xl font-bold mb-2">Falso Positivo</h3><span class="inline-block bg-red-100 text-red-700 text-xs font-bold px-3 py-1 rounded-full mb-3">Dice SÍ · es NO</span><p class="text-sm text-gray-500 italic mb-2">Alarma sin fuego. Molestas a todos, pero nadie muere.</p><p class="text-sm text-gray-600">El modelo predice readmisión pero el paciente estaba bien.</p></div>
+      <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-yellow-500"><p class="text-xs font-bold text-yellow-600 uppercase mb-1">Error Tipo II</p><h3 class="text-xl font-bold mb-2">Falso Negativo</h3><span class="inline-block bg-yellow-100 text-yellow-700 text-xs font-bold px-3 py-1 rounded-full mb-3">Dice NO · es SÍ</span><p class="text-sm text-gray-500 italic mb-2">Hay fuego pero la alarma no suena. Catástrofe.</p><p class="text-sm text-gray-600">El modelo dice que no se readmitirá pero sí regresa.</p></div>
+    </div>
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-10"><div class="bg-slate-800 text-white px-6 py-3"><h3 class="font-bold text-sm uppercase">Comparación de Modelos — Caso Hospital</h3></div><div class="overflow-x-auto"><table class="w-full text-sm"><thead class="bg-gray-50"><tr><th class="px-4 py-3 text-left">Modelo</th><th class="px-4 py-3 text-left">Costo</th><th class="px-4 py-3 text-left">Sensibilidad</th><th class="px-4 py-3 text-left">Falsos +</th><th class="px-4 py-3 text-left">Precisión</th></tr></thead><tbody>
+      <tr class="border-t"><td class="px-4 py-3">Modelo 1</td><td class="px-4 py-3">1:1</td><td class="px-4 py-3"><div class="flex items-center gap-2"><div class="w-16 bg-gray-200 rounded-full h-2"><div class="bg-blue-400 h-2 rounded-full" style="width:45%"></div></div>45%</div></td><td class="px-4 py-3">3%</td><td class="px-4 py-3">85%</td></tr>
+      <tr class="border-t bg-gray-50"><td class="px-4 py-3">Modelo 2</td><td class="px-4 py-3">1.5:1</td><td class="px-4 py-3"><div class="flex items-center gap-2"><div class="w-16 bg-gray-200 rounded-full h-2"><div class="bg-blue-500 h-2 rounded-full" style="width:60%"></div></div>60%</div></td><td class="px-4 py-3">8%</td><td class="px-4 py-3">—</td></tr>
+      <tr class="border-t border-2 border-emerald-500 bg-emerald-50"><td class="px-4 py-3 font-bold">Modelo 3 <span class="bg-emerald-600 text-white text-xs px-2 py-0.5 rounded-full">GANADOR</span></td><td class="px-4 py-3 font-bold">4:1</td><td class="px-4 py-3"><div class="flex items-center gap-2"><div class="w-16 bg-gray-200 rounded-full h-2"><div class="bg-emerald-500 h-2 rounded-full" style="width:68%"></div></div><strong>68%</strong></div></td><td class="px-4 py-3 font-bold">15%</td><td class="px-4 py-3 font-bold">81%</td></tr>
+      <tr class="border-t"><td class="px-4 py-3">Modelo 4</td><td class="px-4 py-3">9:1</td><td class="px-4 py-3"><div class="flex items-center gap-2"><div class="w-16 bg-gray-200 rounded-full h-2"><div class="bg-red-500 h-2 rounded-full" style="width:97%"></div></div>97%</div></td><td class="px-4 py-3">65%</td><td class="px-4 py-3">49%</td></tr>
+    </tbody></table></div></div>
+    <div class="grid md:grid-cols-2 gap-6 mb-10">
+      <div class="bg-white rounded-xl shadow p-6"><h3 class="font-bold text-orange-500 uppercase text-sm mb-4">Curva ROC y AUC</h3><p class="text-sm text-gray-600 mb-2"><span class="font-bold text-emerald-600">Eje Y</span> = True Positive Rate (lo más alto posible)</p><p class="text-sm text-gray-600 mb-2"><span class="font-bold text-red-500">Eje X</span> = False Positive Rate (lo más bajo posible)</p><p class="text-sm text-gray-600 mb-3">Modelo 3: <strong>0.68 - 0.15 = 0.53</strong> separación máxima.</p><div class="flex flex-wrap gap-2"><span class="text-xs bg-gray-200 px-3 py-1 rounded-full">0.5 Inútil</span><span class="text-xs bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full">0.7 Aceptable</span><span class="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full">0.8 Bueno</span><span class="text-xs bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full font-bold">0.9+ Excelente</span></div></div>
+      <div class="bg-white rounded-xl shadow p-6"><h3 class="font-bold text-slate-800 uppercase text-sm mb-4">3 Preguntas Obligatorias</h3><div class="space-y-3"><div class="flex gap-3"><span class="bg-slate-800 text-white w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm flex-shrink-0">01</span><p class="text-sm text-gray-600">¿Cuál error duele más?</p></div><div class="flex gap-3"><span class="bg-slate-800 text-white w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm flex-shrink-0">02</span><p class="text-sm text-gray-600">¿Cuánto más? Cuantifícalo.</p></div><div class="flex gap-3"><span class="bg-slate-800 text-white w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm flex-shrink-0">03</span><p class="text-sm text-gray-600">Ese es tu costo relativo. Configúralo antes de entrenar.</p></div></div><div class="mt-4 bg-gray-50 rounded-lg p-3 text-xs space-y-1"><div class="flex justify-between"><span>Medicina crítica</span><span class="font-bold text-red-500">10:1 — 100:1</span></div><div class="flex justify-between"><span>Detección fraude</span><span class="font-bold text-orange-500">5:1 — 50:1</span></div><div class="flex justify-between"><span>Control calidad</span><span class="font-bold text-green-500">1000:1+</span></div><div class="flex justify-between"><span>Churn</span><span class="font-bold text-purple-500">20:1 — 40:1</span></div></div></div>
+    </div>
+    <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 border-t-4 border-orange-500" id="quiz3"><h3 class="text-xl font-bold text-slate-800 mb-1">Examen — Capítulo 3</h3><div id="quiz3Questions"></div><button onclick="gradeQuiz(3)" class="mt-6 bg-orange-500 text-white font-semibold px-8 py-3 rounded-xl hover:bg-orange-600 transition">Calificar</button><div id="quiz3Result" class="mt-4 hidden"></div></div>
+    <div class="flex justify-between items-center mt-8 mb-4"><button onclick="showChapter(2)" class="text-sm text-gray-500 hover:text-slate-800">← Enfoque</button><button onclick="showChapter(4)" class="bg-slate-800 text-white px-6 py-2 rounded-xl hover:bg-sky-800 transition text-sm font-semibold">Siguiente: Churn →</button></div>
+  </div>
+</div>
+
+<!-- ========== CAP 4: CHURN ========== -->
+<div class="chapter" id="ch4">
+  <section class="bg-gradient-to-r from-purple-900 to-indigo-800 text-white py-16 px-4"><div class="max-w-5xl mx-auto"><p class="uppercase tracking-widest text-purple-300 text-sm mb-2">Capítulo 4</p><h1 class="text-3xl md:text-5xl font-black mb-3"><span class="text-yellow-400">Churn</span>, <span class="text-green-400">Threshold</span> y <span class="text-red-400">Ratio X:1</span></h1><p class="text-lg text-purple-200">Los 3 conceptos más importantes en clasificación de negocio.</p></div></section>
+  <div class="max-w-5xl mx-auto px-4 py-10">
+    <div class="grid md:grid-cols-3 gap-6 mb-10">
+      <div class="bg-white rounded-xl shadow-lg p-6 border-t-4 border-yellow-500"><h3 class="font-bold text-yellow-600 text-lg mb-2">Churn</h3><p class="text-sm italic text-gray-500 mb-3">Clientes que abandonan el servicio.</p><p class="text-sm text-gray-600 mb-2">Radar que avisa con 1 mes de anticipación.</p><ul class="text-sm text-gray-600 space-y-1"><li>&#9679; 3 semanas sin abrir la app</li><li>&#9679; Busca "cómo cancelar"</li><li>&#9679; Uso baja de 2h a 10min</li><li>&#9679; Sin usar premium en 30 días</li></ul></div>
+      <div class="bg-white rounded-xl shadow-lg p-6 border-t-4 border-green-500"><h3 class="font-bold text-green-600 text-lg mb-2">Threshold</h3><p class="text-sm italic text-gray-500 mb-3">Punto de corte que TÚ defines (0-1).</p><div class="space-y-3 mt-4"><div class="flex items-center gap-2"><span class="font-bold text-red-500">0.30</span><div class="flex-1 bg-gray-200 rounded-full h-2"><div class="bg-red-500 h-2 rounded-full" style="width:100%"></div></div><span class="text-xs">Sensible</span></div><div class="flex items-center gap-2"><span class="font-bold text-yellow-500">0.50</span><div class="flex-1 bg-gray-200 rounded-full h-2"><div class="bg-yellow-500 h-2 rounded-full" style="width:60%"></div></div><span class="text-xs">Default</span></div><div class="flex items-center gap-2"><span class="font-bold text-green-500">0.70</span><div class="flex-1 bg-gray-200 rounded-full h-2"><div class="bg-green-500 h-2 rounded-full" style="width:30%"></div></div><span class="text-xs">Conservador</span></div></div></div>
+      <div class="bg-white rounded-xl shadow-lg p-6 border-t-4 border-red-500"><h3 class="font-bold text-red-600 text-lg mb-2">Ratio X:1</h3><p class="text-sm italic text-gray-500 mb-3">¿Cuántas veces duele más el error grave?</p><div class="bg-gray-50 rounded-lg p-3 text-sm mb-3"><p>Perder cliente: <strong>$300</strong></p><p>Descuento: <strong>$10</strong></p><p>Ratio = <strong class="text-red-600 text-lg">30:1</strong></p></div><p class="text-xs text-red-500 font-semibold">Más costoso el falso negativo → más bajo el threshold.</p></div>
+    </div>
+    <div class="bg-gradient-to-r from-purple-900 to-indigo-800 text-white rounded-2xl p-6 mb-10"><h3 class="font-bold uppercase text-sm mb-4">Conexión de los 3 conceptos</h3><div class="grid md:grid-cols-3 gap-4 text-center"><div><span class="text-4xl font-black text-yellow-400">1</span><p class="text-sm mt-2">Modelo genera probabilidades 0-1</p></div><div><span class="text-4xl font-black text-green-400">2</span><p class="text-sm mt-2">Calculas ratio según costo de errores</p></div><div><span class="text-4xl font-black text-red-400">3</span><p class="text-sm mt-2">Ratio define threshold óptimo</p></div></div></div>
+    <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 border-t-4 border-purple-500" id="quiz4"><h3 class="text-xl font-bold text-slate-800 mb-1">Examen — Capítulo 4</h3><div id="quiz4Questions"></div><button onclick="gradeQuiz(4)" class="mt-6 bg-purple-600 text-white font-semibold px-8 py-3 rounded-xl hover:bg-purple-700 transition">Calificar</button><div id="quiz4Result" class="mt-4 hidden"></div></div>
+    <div class="flex justify-between items-center mt-8 mb-4"><button onclick="showChapter(3)" class="text-sm text-gray-500 hover:text-slate-800">← ROC</button><button onclick="showChapter(5)" class="bg-slate-800 text-white px-6 py-2 rounded-xl hover:bg-sky-800 transition text-sm font-semibold">Siguiente: CRISP-DM →</button></div>
+  </div>
+</div>
+
+<!-- ========== CAP 5: CRISP-DM ========== -->
+<div class="chapter" id="ch5">
+  <section class="bg-gradient-to-r from-blue-800 to-cyan-700 text-white py-16 px-4"><div class="max-w-5xl mx-auto"><p class="uppercase tracking-widest text-cyan-200 text-sm mb-2">Capítulo 5</p><h1 class="text-3xl md:text-5xl font-black mb-3">CRISP-DM</h1><p class="text-lg text-cyan-100">Cross-Industry Standard Process for Data Mining.</p></div></section>
+  <div class="max-w-5xl mx-auto px-4 py-10">
+    <div class="grid md:grid-cols-2 gap-8 mb-10">
+      <div class="bg-white rounded-xl shadow-lg overflow-hidden"><div class="bg-blue-700 text-white px-6 py-3"><h3 class="font-bold text-sm uppercase">6 Etapas vs. 10 de Rollins</h3></div><div class="divide-y text-sm"><div class="flex justify-between px-5 py-3"><span class="font-semibold">1. Comprensión del negocio</span><span class="text-gray-500">= Etapa 1</span></div><div class="flex justify-between px-5 py-3 bg-gray-50"><span class="font-semibold">2. Comprensión de datos</span><span class="text-gray-500">= Etapas 3+4+5</span></div><div class="flex justify-between px-5 py-3"><span class="font-semibold">3. Preparación</span><span class="text-gray-500">= Etapa 6</span></div><div class="flex justify-between px-5 py-3 bg-gray-50"><span class="font-semibold">4. Modelado</span><span class="text-gray-500">= Etapa 7</span></div><div class="flex justify-between px-5 py-3"><span class="font-semibold">5. Evaluación</span><span class="text-gray-500">= Etapa 8</span></div><div class="flex justify-between px-5 py-3 bg-gray-50"><span class="font-semibold">6. Implementación</span><span class="text-gray-500">= Etapa 9 + retro</span></div></div></div>
+      <div class="space-y-4"><h3 class="font-bold text-slate-800 text-lg">3 Principios</h3><div class="bg-white rounded-xl shadow p-5 border-l-4 border-blue-500"><h4 class="font-bold text-blue-600 mb-1">Iterativo</h4><p class="text-sm text-gray-600">Puedes volver a cualquier etapa.</p></div><div class="bg-white rounded-xl shadow p-5 border-l-4 border-green-500"><h4 class="font-bold text-green-600 mb-1">Comunicación constante</h4><p class="text-sm text-gray-600">Con el equipo durante todo el proceso.</p></div><div class="bg-white rounded-xl shadow p-5 border-l-4 border-purple-500"><h4 class="font-bold text-purple-600 mb-1">Termina por acuerdo</h4><p class="text-sm text-gray-600">Cuando responde las preguntas del negocio.</p></div></div>
+    </div>
+    <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 border-t-4 border-blue-500" id="quiz5"><h3 class="text-xl font-bold text-slate-800 mb-1">Examen — Capítulo 5</h3><div id="quiz5Questions"></div><button onclick="gradeQuiz(5)" class="mt-6 bg-blue-600 text-white font-semibold px-8 py-3 rounded-xl hover:bg-blue-700 transition">Calificar</button><div id="quiz5Result" class="mt-4 hidden"></div></div>
+    <div class="flex justify-between items-center mt-8 mb-4"><button onclick="showChapter(4)" class="text-sm text-gray-500 hover:text-slate-800">← Churn</button><button onclick="showChapter(6)" class="bg-slate-800 text-white px-6 py-2 rounded-xl hover:bg-sky-800 transition text-sm font-semibold">Siguiente: Storytelling →</button></div>
+  </div>
+</div>
+
+<!-- ========== CAP 6: STORYTELLING ========== -->
+<div class="chapter" id="ch6">
+  <section class="bg-gradient-to-r from-yellow-600 to-orange-600 text-white py-16 px-4"><div class="max-w-5xl mx-auto"><p class="uppercase tracking-widest text-yellow-200 text-sm mb-2">Capítulo 6</p><h1 class="text-3xl md:text-5xl font-black mb-3">Data Storytelling</h1><p class="text-lg text-yellow-100">La última milla de los datos.</p></div></section>
+  <div class="max-w-5xl mx-auto px-4 py-10">
+    <blockquote class="border-l-4 border-orange-400 bg-orange-50 rounded-r-xl p-6 mb-10 italic text-gray-700">"Si no puedes comunicar tu análisis de forma clara y convincente, es para nada." — Estudio IBM</blockquote>
+    <div class="grid md:grid-cols-2 gap-8 mb-10">
+      <div><h3 class="font-bold text-slate-800 text-lg mb-4">Estructura</h3><div class="space-y-4">
+        <div class="bg-white rounded-xl shadow p-5 border-l-4 border-blue-400"><h4 class="font-bold text-blue-600 mb-1">1. Contexto</h4><p class="text-sm text-gray-600">Establece la situación antes de números.</p><p class="text-xs italic text-blue-500 mt-1">Ej: "3 meses con defectos crecientes en línea 3."</p></div>
+        <div class="bg-white rounded-xl shadow p-5 border-l-4 border-red-400"><h4 class="font-bold text-red-600 mb-1">2. Conflicto</h4><p class="text-sm text-gray-600">Los datos son evidencia, no protagonistas.</p><p class="text-xs italic text-red-500 mt-1">Ej: "80% de defectos en primeras 2h del turno nocturno."</p></div>
+        <div class="bg-white rounded-xl shadow p-5 border-l-4 border-green-400"><h4 class="font-bold text-green-600 mb-1">3. Resolución</h4><p class="text-sm text-gray-600">Debe terminar en acción concreta.</p><p class="text-xs italic text-green-500 mt-1">Ej: "Ajustar máquina 7 = -60% defectos = $2,300/semana."</p></div>
+      </div></div>
+      <div><h3 class="font-bold text-slate-800 text-lg mb-4">Técnica "¿Y qué?"</h3><div class="space-y-3">
+        <div class="bg-gray-50 rounded-lg p-3 text-sm">"12% de defectos" <span class="text-orange-500 font-bold">→ ¿y qué?</span></div>
+        <div class="bg-gray-50 rounded-lg p-3 text-sm">"47 piezas por turno" <span class="text-orange-500 font-bold">→ ¿y qué?</span></div>
+        <div class="bg-gray-50 rounded-lg p-3 text-sm">"$2,300/semana" <span class="text-orange-500 font-bold">→ ¿y qué?</span></div>
+        <div class="bg-emerald-50 rounded-lg p-3 text-sm font-bold text-emerald-700 border-2 border-emerald-300">"Intervenimos hoy y lo recuperamos." ← La historia.</div>
+      </div>
+      <h3 class="font-bold text-slate-800 text-lg mt-6 mb-3">Niveles de madurez</h3><div class="space-y-2 text-sm">
+        <div class="flex items-center gap-2"><span class="bg-gray-300 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">1</span>Describes lo que ves</div>
+        <div class="flex items-center gap-2"><span class="bg-blue-400 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">2</span>Explicas qué significa</div>
+        <div class="flex items-center gap-2"><span class="bg-yellow-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">3</span>Conectas con negocio</div>
+        <div class="flex items-center gap-2"><span class="bg-orange-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">4</span>Propones acción</div>
+        <div class="flex items-center gap-2"><span class="bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">5</span><strong>Creas urgencia</strong></div>
+      </div></div>
+    </div>
+    <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 border-t-4 border-yellow-500" id="quiz6"><h3 class="text-xl font-bold text-slate-800 mb-1">Examen — Capítulo 6</h3><div id="quiz6Questions"></div><button onclick="gradeQuiz(6)" class="mt-6 bg-yellow-600 text-white font-semibold px-8 py-3 rounded-xl hover:bg-yellow-700 transition">Calificar</button><div id="quiz6Result" class="mt-4 hidden"></div></div>
+    <div class="flex justify-between items-center mt-8 mb-4"><button onclick="showChapter(5)" class="text-sm text-gray-500 hover:text-slate-800">← CRISP-DM</button><button onclick="showChapter(7)" class="bg-slate-800 text-white px-6 py-2 rounded-xl hover:bg-sky-800 transition text-sm font-semibold">Siguiente: Glosario →</button></div>
+  </div>
+</div>
+
+<!-- ========== CAP 7: GLOSARIO ========== -->
+<div class="chapter" id="ch7">
+  <section class="bg-gradient-to-r from-gray-700 to-gray-900 text-white py-16 px-4"><div class="max-w-5xl mx-auto"><p class="uppercase tracking-widest text-gray-400 text-sm mb-2">Capítulo 7</p><h1 class="text-3xl md:text-5xl font-black mb-3">Glosario y Cierre</h1></div></section>
+  <div class="max-w-5xl mx-auto px-4 py-10">
+    <div class="grid md:grid-cols-2 gap-4 mb-10">
+      <div class="bg-white rounded-xl shadow p-5"><h4 class="font-bold text-slate-800 mb-1">Árbol de decisión</h4><p class="text-sm text-gray-600">Preguntas encadenadas para clasificar datos.</p></div>
+      <div class="bg-white rounded-xl shadow p-5"><h4 class="font-bold text-slate-800 mb-1">Training set</h4><p class="text-sm text-gray-600">Datos históricos con resultados conocidos.</p></div>
+      <div class="bg-white rounded-xl shadow p-5"><h4 class="font-bold text-slate-800 mb-1">Feature engineering</h4><p class="text-sm text-gray-600">Crear variables desde datos brutos.</p></div>
+      <div class="bg-white rounded-xl shadow p-5"><h4 class="font-bold text-slate-800 mb-1">Estadísticas descriptivas</h4><p class="text-sm text-gray-600">Media, mediana, mín, máx, desviación estándar.</p></div>
+      <div class="bg-white rounded-xl shadow p-5"><h4 class="font-bold text-slate-800 mb-1">Correlación por pares</h4><p class="text-sm text-gray-600">Relación entre dos variables.</p></div>
+      <div class="bg-white rounded-xl shadow p-5"><h4 class="font-bold text-slate-800 mb-1">Estudio de cohorte</h4><p class="text-sm text-gray-600">Grupo con características comunes seguido en el tiempo.</p></div>
+      <div class="bg-white rounded-xl shadow p-5"><h4 class="font-bold text-slate-800 mb-1">Variable / Feature</h4><p class="text-sm text-gray-600">Columna del dataset usada por el modelo.</p></div>
+      <div class="bg-white rounded-xl shadow p-5"><h4 class="font-bold text-slate-800 mb-1">Valores faltantes</h4><p class="text-sm text-gray-600">Eliminar, imputar, o marcar como desconocido.</p></div>
+    </div>
+    <div class="bg-gradient-to-br from-emerald-700 to-emerald-900 text-white rounded-2xl p-8 mb-10">
+      <h2 class="text-2xl font-bold mb-6">La Fórmula del Éxito</h2>
+      <div class="grid md:grid-cols-2 gap-8">
+        <div class="space-y-3"><div class="bg-white/10 rounded-xl p-4"><strong>Del problema al enfoque</strong></div><div class="bg-white/10 rounded-xl p-4"><strong>Trabajar con datos</strong></div><div class="bg-white/10 rounded-xl p-4"><strong>Modelar y evaluar</strong></div><div class="bg-white/10 rounded-xl p-4"><strong>Desplegar y mejorar</strong></div></div>
+        <div class="flex flex-col justify-center"><div class="bg-white/10 rounded-2xl p-8 text-center"><p class="text-xl">Herramientas <span class="text-emerald-300 font-bold">correctas</span></p><p class="text-xl">+ Momento <span class="text-emerald-300 font-bold">correcto</span></p><p class="text-xl">+ Orden <span class="text-emerald-300 font-bold">correcto</span></p><p class="text-xl">+ Problema <span class="text-emerald-300 font-bold">correcto</span></p><p class="mt-3 text-sm italic text-emerald-200">— John Rollins</p></div></div>
+      </div>
+    </div>
+    <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 border-t-4 border-gray-500" id="quiz7"><h3 class="text-xl font-bold text-slate-800 mb-1">Examen Final</h3><div id="quiz7Questions"></div><button onclick="gradeQuiz(7)" class="mt-6 bg-slate-800 text-white font-semibold px-8 py-3 rounded-xl hover:bg-sky-800 transition">Calificar</button><div id="quiz7Result" class="mt-4 hidden"></div></div>
+    <div class="flex justify-between items-center mt-8 mb-4"><button onclick="showChapter(6)" class="text-sm text-gray-500 hover:text-slate-800">← Storytelling</button><button onclick="showChapter(8)" class="bg-orange-500 text-white px-6 py-2 rounded-xl hover:bg-orange-600 transition text-sm font-semibold">Registro →</button></div>
+  </div>
+</div>
+
+<!-- ========== REGISTRO ========== -->
+<div class="chapter" id="ch8">
+  <section class="bg-gradient-to-r from-orange-500 to-red-600 text-white py-16 px-4"><div class="max-w-5xl mx-auto"><p class="uppercase tracking-widest text-orange-200 text-sm mb-2">Herramienta</p><h1 class="text-3xl md:text-5xl font-black mb-3">Registro de Estudios</h1></div></section>
+  <div class="max-w-5xl mx-auto px-4 py-10">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      <div class="bg-white rounded-xl shadow p-5 text-center"><div class="text-3xl font-black text-emerald-600" id="statDays">0</div><div class="text-sm text-gray-500">Días estudiados</div></div>
+      <div class="bg-white rounded-xl shadow p-5 text-center"><div class="text-3xl font-black text-orange-500" id="statStreak">0</div><div class="text-sm text-gray-500">Racha actual</div></div>
+      <div class="bg-white rounded-xl shadow p-5 text-center"><div class="text-3xl font-black text-slate-800" id="statChapters">0/7</div><div class="text-sm text-gray-500">Exámenes aprobados</div></div>
+      <div class="bg-white rounded-xl shadow p-5 text-center"><div class="text-3xl font-black text-purple-600" id="statAvg">—</div><div class="text-sm text-gray-500">Promedio</div></div>
+    </div>
+    <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 mb-8">
+      <h2 class="text-xl font-bold text-slate-800 mb-4">Registrar hoy</h2>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+        <label class="flex items-center gap-2 bg-gray-50 rounded-lg p-3 cursor-pointer hover:bg-gray-100"><input type="checkbox" class="study-check rounded accent-emerald-600" value="1"><span class="text-sm">Cap 1</span></label>
+        <label class="flex items-center gap-2 bg-gray-50 rounded-lg p-3 cursor-pointer hover:bg-gray-100"><input type="checkbox" class="study-check rounded accent-emerald-600" value="2"><span class="text-sm">Cap 2</span></label>
+        <label class="flex items-center gap-2 bg-gray-50 rounded-lg p-3 cursor-pointer hover:bg-gray-100"><input type="checkbox" class="study-check rounded accent-emerald-600" value="3"><span class="text-sm">Cap 3</span></label>
+        <label class="flex items-center gap-2 bg-gray-50 rounded-lg p-3 cursor-pointer hover:bg-gray-100"><input type="checkbox" class="study-check rounded accent-emerald-600" value="4"><span class="text-sm">Cap 4</span></label>
+        <label class="flex items-center gap-2 bg-gray-50 rounded-lg p-3 cursor-pointer hover:bg-gray-100"><input type="checkbox" class="study-check rounded accent-emerald-600" value="5"><span class="text-sm">Cap 5</span></label>
+        <label class="flex items-center gap-2 bg-gray-50 rounded-lg p-3 cursor-pointer hover:bg-gray-100"><input type="checkbox" class="study-check rounded accent-emerald-600" value="6"><span class="text-sm">Cap 6</span></label>
+        <label class="flex items-center gap-2 bg-gray-50 rounded-lg p-3 cursor-pointer hover:bg-gray-100"><input type="checkbox" class="study-check rounded accent-emerald-600" value="7"><span class="text-sm">Cap 7</span></label>
+      </div>
+      <button onclick="saveStudyDay()" class="bg-emerald-600 text-white font-semibold px-6 py-2 rounded-xl hover:bg-emerald-700 transition">Guardar</button>
+      <span id="saveMsg" class="ml-3 text-sm text-emerald-600 hidden">Guardado</span>
+    </div>
+    <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8"><h2 class="text-xl font-bold text-slate-800 mb-4">Historial</h2><div id="studyHistory" class="space-y-2 text-sm"></div><p id="noHistory" class="text-gray-400 text-sm">No hay registros aún.</p></div>
+    <div class="mt-8 mb-4"><button onclick="showChapter(0)" class="text-sm text-gray-500 hover:text-slate-800">← Inicio</button></div>
+  </div>
+</div>
+
+</main>
+<footer class="bg-slate-800 text-white/50 text-center text-xs py-6">Guía de Estudio · Metodología de Ciencia de Datos · CRISP-DM · IBM</footer>
+
+<script>
+const etapas=[{n:"01",title:"Comprensión del Negocio",en:"Business Understanding",q:"¿Cuál es el problema?",color:"red",what:"Antes de tocar datos, entiende qué pregunta responder. Reuniones con interesados para identificar objetivos. Sin claridad aquí, todo falla.",ex:'El seguro pregunta: "¿Cómo maximizar calidad con presupuesto limitado?" Se reformula: "¿Podemos predecir readmisión dentro de 30 días?"',an:'Como el doctor preguntando "¿dónde te duele?" antes de ordenar análisis.'},{n:"02",title:"Enfoque Analítico",en:"Analytic Approach",q:"¿Cómo usar los datos para responder?",color:"orange",what:"Elige tipo de análisis: descriptivo, diagnóstico, predictivo, prescriptivo o clasificación. Define algoritmos y técnicas.",ex:'"¿SÍ o NO se readmite?" → clasificación binaria → árbol de decisión.',an:"Elegir herramienta antes de construir: sierra para madera, no martillo."},{n:"03",title:"Requisitos de Datos",en:"Data Requirements",q:"¿Qué datos necesitas?",color:"yellow",what:"Qué información, en qué formato, de qué fuentes. Criterios de inclusión del grupo de estudio.",ex:"Historial clínico, diagnósticos, medicamentos, edad, género, ingresos previos. Grupo: insuficiencia cardíaca congestiva.",an:"Lista del supermercado antes de ir. Si no sabes qué necesitas, te faltará algo crítico."},{n:"04",title:"Recolección de Datos",en:"Data Collection",q:"¿De dónde vienen los datos?",color:"green",what:"Se obtienen datos de fuentes identificadas. DBAs extraen y fusionan, eliminando redundancias.",ex:"Datos demográficos, reclamaciones, laboratorio, medicamentos de distintas bases. Si falta algo (dieta), se pospone.",an:"Recopilar registros de producción de distintas líneas y unirlos sin duplicar."},{n:"05",title:"Comprensión de Datos",en:"Data Understanding",q:"¿Los datos representan el problema?",color:"teal",what:"Estadísticas descriptivas, correlaciones, histogramas. Detectar anomalías, redundancias, distribución.",ex:'Campo "edad" con valor 999 = "desconocido". Más jóvenes de lo esperado → definición demasiado amplia.',an:"Revisar ingredientes antes de cocinar: leche caducada, azúcar vs sal, cantidades correctas."},{n:"06",title:"Preparación de Datos",en:"Data Preparation",q:"¿Qué trabajo adicional se requiere?",color:"blue",what:"Limpieza, transformación, feature engineering. 70-90% del tiempo. Automatizar reduce al 50%.",ex:'Recodificar "edad 999" como nulo. Crear "hospitalizaciones previas en 12 meses" combinando registros.',an:"Lavar, pelar y cortar verduras. Si están sucios, el platillo saldrá mal."},{n:"07",title:"Modelado",en:"Modeling",q:"¿Ves respuestas que abordan el problema?",color:"indigo",what:"Construir modelo con datos de entrenamiento. Probar algoritmos, ajustar parámetros. Tipos: descriptivos y predictivos.",ex:"Modelo 1 (1:1): 85% precisión pero solo 45% de readmisiones detectadas. Necesita ajuste de costo.",an:"Probar la salsa mientras cocinas. El training set es tu historial de recetas."},{n:"08",title:"Evaluación",en:"Evaluation",q:"¿Responde la pregunta inicial?",color:"purple",what:"Métricas: precisión, sensibilidad, especificidad, ROC, AUC. Elegir mejor balance para el negocio.",ex:"Modelo 3 (4:1): 68% sensibilidad, 15% falsos+, 81% precisión. Mayor separación ROC (0.53).",an:"Calificar examen con rúbrica. No basta puntaje total — importa qué errores son más graves."},{n:"09",title:"Despliegue",en:"Deployment",q:"¿Puedes ponerlo en práctica?",color:"pink",what:"Integrar en sistemas reales: dashboard, alerta automática, recomendación, reporte periódico.",ex:'Sistema clínico muestra: "Riesgo de readmisión: ALTO – 78%" y sugiere seguimiento intensivo.',an:"Semáforo en línea de producción que se pone rojo cuando los datos predicen falla."},{n:"10",title:"Retroalimentación",en:"Feedback",q:"¿Puedes obtener retroalimentación?",color:"emerald",what:"Proceso iterativo. Resultados del mundo real retroalimentan: nuevos datos, variables, cambios de negocio.",ex:"Médicos reportan fallos con diabéticos. Se agrega hemoglobina glicosilada. Mejora 12%.",an:"Mejorar receta cada vez. Ajustar sal, tiempo, ingredientes. Nunca está terminado."}];
+const colorMap={red:'bg-red-400',orange:'bg-orange-400',yellow:'bg-yellow-400',green:'bg-green-400',teal:'bg-teal-400',blue:'bg-blue-400',indigo:'bg-indigo-400',purple:'bg-purple-400',pink:'bg-pink-400',emerald:'bg-emerald-500'};
+const borderMap={red:'border-red-400',orange:'border-orange-400',yellow:'border-yellow-400',green:'border-green-400',teal:'border-teal-400',blue:'border-blue-400',indigo:'border-indigo-400',purple:'border-purple-400',pink:'border-pink-400',emerald:'border-emerald-500'};
+function renderEtapas(){document.getElementById('etapasContainer').innerHTML=etapas.map(e=>'<div class="etapa-card bg-white rounded-xl shadow mb-4 border-l-4 '+borderMap[e.color]+' cursor-pointer" onclick="this.classList.toggle(\'open\')"><div class="flex items-center justify-between p-5"><div class="flex items-center gap-3"><span class="'+colorMap[e.color]+' text-white w-9 h-9 rounded-lg flex items-center justify-center font-bold text-sm">'+e.n+'</span><div><h3 class="font-bold text-gray-800">'+e.title+'</h3><p class="text-xs text-gray-400">'+e.en+' — "'+e.q+'"</p></div></div><svg class="arrow w-5 h-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div><div class="etapa-body"><div class="grid md:grid-cols-3 gap-4 px-5 pb-5"><div class="bg-gray-50 rounded-lg p-4"><h4 class="font-semibold text-sm text-gray-700 mb-2">¿Qué es?</h4><p class="text-sm text-gray-600">'+e.what+'</p></div><div class="bg-emerald-50 rounded-lg p-4 border border-emerald-200"><h4 class="font-semibold text-sm text-emerald-700 mb-2">Ejemplo · Hospital</h4><p class="text-sm text-gray-600">'+e.ex+'</p></div><div class="bg-yellow-50 rounded-lg p-4 border border-yellow-200"><h4 class="font-semibold text-sm text-yellow-700 mb-2">Analogía</h4><p class="text-sm text-gray-600">'+e.an+'</p></div></div></div></div>').join('');}
+
+const quizData={1:[{q:"¿Primera etapa?",opts:["Recolección","Comprensión del negocio","Modelado","Preparación"],ans:1},{q:"¿% tiempo en preparación de datos?",opts:["30-40%","50-60%","70-90%","10-20%"],ans:2},{q:"¿Modelo elegido en caso hospital?",opts:["Regresión","Red neuronal","Árbol de decisión","SVM"],ans:2},{q:"¿Etapa que define qué datos se necesitan?",opts:["Etapa 1","Etapa 2","Etapa 3","Etapa 5"],ans:2},{q:"¿Qué significa 'iterativo'?",opts:["Es lineal","Puedes volver a etapas anteriores","Se repite una vez","Es automático"],ans:1},{q:"¿Qué se encontró en campo 'edad'?",opts:["Datos perfectos","999 = desconocido","Negativos","Ceros"],ans:1},{q:"¿Qué es Feature Engineering?",opts:["Eliminar variables","Crear nuevas variables desde datos brutos","Copiar datos","Reducir dataset"],ans:1},{q:"¿Qué es Flight to Risk?",opts:["Ignora riesgo","Enfoca en mayor riesgo","Regresión","Un avión"],ans:1},{q:"¿Pasos del plan de retroalimentación?",opts:["2","3","5","10"],ans:1},{q:"¿Quién dijo 'Entre más conozcas...'?",opts:["Einstein","Rollins","Jobs","Turing"],ans:1}],
+2:[{q:"¿Cuántos tipos de enfoque?",opts:["3","4","5","7"],ans:2},{q:"'¿Situación actual?' = enfoque:",opts:["Predictivo","Descriptivo","Prescriptivo","Clasificación"],ans:1},{q:"Técnicas del enfoque predictivo:",opts:["Dashboards","Optimización","Regresión, series, ML","Visualización"],ans:2},{q:"'¿A qué categoría pertenece?' =",opts:["Diagnóstico","Descriptivo","Prescriptivo","Clasificación"],ans:3},{q:"Modelo descriptivo:",opts:["Predice","Muestra patrones","Solo gráficas","Usa redes neuronales"],ans:1},{q:"'¿Qué debemos hacer?' =",opts:["Descriptivo","Diagnóstico","Predictivo","Prescriptivo"],ans:3},{q:"Diagnóstico responde:",opts:["¿Qué pasará?","¿Por qué ocurrió?","¿Qué hacer?","¿Cuánto cuesta?"],ans:1},{q:"'¿SÍ o NO se readmite?' es:",opts:["Prescriptivo","Descriptivo","Clasificación","Diagnóstico"],ans:2}],
+3:[{q:"Falso Positivo =",opts:["Dice NO es SÍ","Dice SÍ es NO","Acierta","Error de código"],ans:1},{q:"Falso Negativo =",opts:["Dice SÍ es NO","Dice NO es SÍ","No funciona","Error datos"],ans:1},{q:"¿Modelo ganador?",opts:["Modelo 1","Modelo 2","Modelo 3 (4:1)","Modelo 4"],ans:2},{q:"Eje Y de ROC =",opts:["FPR","TPR","Precisión","Costo"],ans:1},{q:"AUC 'Bueno' =",opts:["0.5","0.6","0.8","0.3"],ans:2},{q:"Ratio medicina crítica:",opts:["1:1","5:1","10:1—100:1","1000:1+"],ans:2},{q:"Separación Modelo 3:",opts:["0.85","0.53","0.15","0.68"],ans:1},{q:"¿Configurar ANTES de entrenar?",opts:["Colores","Costo relativo","Nombre","Cantidad datos"],ans:1}],
+4:[{q:"Churn =",opts:["Ganancias","Clientes que abandonan","Nuevos clientes","Algoritmo"],ans:1},{q:"Threshold =",opts:["Costo","Punto de corte","Tamaño dataset","Velocidad"],ans:1},{q:"Threshold 0.30:",opts:["Conservador","Muy sensible","Default","Imposible"],ans:1},{q:"Perder $300, descuento $10. Ratio:",opts:["10:1","30:1","3:1","300:1"],ans:1},{q:"Ratio alto (30:1) → threshold:",opts:["Alto","Medio","Bajo","No importa"],ans:2},{q:"Ratio Churn típico:",opts:["1:1","5:1","20:1—40:1","1000:1+"],ans:2}],
+5:[{q:"CRISP-DM =",opts:["Critical Standard","Cross-Industry Standard Process for Data Mining","Customer Relations","Computing Resources"],ans:1},{q:"Etapas CRISP-DM:",opts:["4","6","8","10"],ans:1},{q:"'Comprensión de datos' CRISP =",opts:["Etapa 1","Etapas 3+4+5","Etapa 7","Sin equivalente"],ans:1},{q:"NO es principio compartido:",opts:["Iterativo","Comunicación","Acuerdo","Velocidad máxima"],ans:3},{q:"Proyecto termina cuando:",opts:["100% precisión","Sin presupuesto","Responde preguntas negocio","Jefe decide"],ans:2}],
+6:[{q:"3 elementos de buena historia:",opts:["Inicio, nudo, desenlace","Contexto, conflicto, resolución","Datos, gráficas, tablas","Problema, solución, costo"],ans:1},{q:"'¿Y qué?' busca:",opts:["Más preguntas","Algo accionable","Ignorar datos","Solo describir"],ans:1},{q:"Nivel 5 storytelling:",opts:["Describes","Propones acción","Creas urgencia","Explicas"],ans:2},{q:"Libro estándar:",opts:["Data Science Beginners","Storytelling with Data","Art of War","Python Data Analysis"],ans:1},{q:"Sin acción clara:",opts:["Está bien","Fallaste","Buen análisis","Más gráficas"],ans:1}],
+7:[{q:"Training set =",opts:["Todos los datos","Datos históricos con resultados conocidos","Solo nuevos","De prueba"],ans:1},{q:"Valores faltantes =",opts:["Errores código","Datos ausentes","Variables extras","Duplicados"],ans:1},{q:"Fórmula Rollins:",opts:["Solo herramientas","Herramientas+Momento+Orden+Problema","Dinero+Tiempo","Solo algoritmos"],ans:1},{q:"Estudio de cohorte =",opts:["Algoritmo","Grupo seguido en el tiempo","Examen","Modelo predictivo"],ans:1},{q:"Pensar como científica de datos:",opts:["Solo programar","Saber por qué, cuándo y qué pregunta","Memorizar","Solo Python"],ans:1}]};
+
+function showChapter(n){document.querySelectorAll('.chapter').forEach(c=>c.classList.remove('active'));document.getElementById('ch'+n).classList.add('active');document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active-nav'));const b=document.querySelector('.nav-link[data-ch="'+n+'"]');if(b)b.classList.add('active-nav');window.scrollTo({top:0,behavior:'smooth'});if(n===8)loadStudyData();}
+function closeMob(){document.getElementById('mobileMenu').classList.add('hidden');}
+
+function renderQuizzes(){for(let ch=1;ch<=7;ch++){const c=document.getElementById('quiz'+ch+'Questions');if(!c)continue;c.innerHTML=quizData[ch].map((q,i)=>'<div class="mb-6"><p class="font-semibold text-gray-800 mb-3">'+(i+1)+'. '+q.q+'</p><div class="space-y-2">'+q.opts.map((o,j)=>'<label class="quiz-option flex items-center gap-3 p-3 rounded-lg border border-gray-200 cursor-pointer hover:border-gray-400" data-ch="'+ch+'" data-q="'+i+'" data-opt="'+j+'"><input type="radio" name="q'+ch+'_'+i+'" value="'+j+'" class="accent-emerald-600"><span class="text-sm">'+o+'</span></label>').join('')+'</div></div>').join('');}}
+
+function gradeQuiz(ch){const qs=quizData[ch];let correct=0;qs.forEach((q,i)=>{const sel=document.querySelector('input[name="q'+ch+'_'+i+'"]:checked');const labels=document.querySelectorAll('label[data-ch="'+ch+'"][data-q="'+i+'"]');labels.forEach(l=>{l.classList.remove('correct','incorrect');});if(sel){const v=parseInt(sel.value);if(v===q.ans){correct++;sel.closest('label').classList.add('correct');}else{sel.closest('label').classList.add('incorrect');if(labels[q.ans])labels[q.ans].classList.add('correct');}}});const pct=Math.round(correct/qs.length*100);const r=document.getElementById('quiz'+ch+'Result');r.classList.remove('hidden');const pass=pct>=70;r.innerHTML='<div class="p-4 rounded-xl '+(pass?'bg-green-50 border border-green-200':'bg-red-50 border border-red-200')+'"><p class="font-bold '+(pass?'text-green-700':'text-red-700')+' text-lg">'+correct+'/'+qs.length+' — '+pct+'%</p><p class="text-sm '+(pass?'text-green-600':'text-red-600')+'">'+(pass?'Aprobado.':'Necesitas 70%. Revisa el material.')+'</p></div>';const scores=JSON.parse(localStorage.getItem('ds_scores')||'{}');scores[ch]={correct,total:qs.length,pct,passed:pass};localStorage.setItem('ds_scores',JSON.stringify(scores));updateProgress();}
+
+function updateProgress(){const scores=JSON.parse(localStorage.getItem('ds_scores')||'{}');let passed=0;for(let i=1;i<=7;i++)if(scores[i]&&scores[i].passed)passed++;const pct=Math.round(passed/7*100);document.getElementById('globalProgress').style.width=pct+'%';document.getElementById('globalProgressText').textContent=pct+'%';}
+
+function saveStudyDay(){const checks=document.querySelectorAll('.study-check:checked');if(!checks.length)return;const chapters=Array.from(checks).map(c=>parseInt(c.value));const today=new Date().toISOString().split('T')[0];const log=JSON.parse(localStorage.getItem('ds_log')||'[]');const idx=log.findIndex(e=>e.date===today);if(idx>=0)log[idx].chapters=[...new Set([...log[idx].chapters,...chapters])];else log.push({date:today,chapters});localStorage.setItem('ds_log',JSON.stringify(log));document.getElementById('saveMsg').classList.remove('hidden');setTimeout(()=>document.getElementById('saveMsg').classList.add('hidden'),2000);loadStudyData();}
+
+function loadStudyData(){const log=JSON.parse(localStorage.getItem('ds_log')||'[]');const scores=JSON.parse(localStorage.getItem('ds_scores')||'{}');document.getElementById('statDays').textContent=log.length;let streak=0;const today=new Date();for(let i=0;i<365;i++){const d=new Date(today);d.setDate(d.getDate()-i);if(log.some(e=>e.date===d.toISOString().split('T')[0]))streak++;else if(i>0)break;}document.getElementById('statStreak').textContent=streak;let passed=0,totalPct=0,count=0;for(let i=1;i<=7;i++)if(scores[i]){count++;totalPct+=scores[i].pct;if(scores[i].passed)passed++;}document.getElementById('statChapters').textContent=passed+'/7';document.getElementById('statAvg').textContent=count>0?Math.round(totalPct/count)+'%':'—';const h=document.getElementById('studyHistory'),nh=document.getElementById('noHistory');if(!log.length){nh.classList.remove('hidden');h.innerHTML='';return;}nh.classList.add('hidden');h.innerHTML=[...log].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,30).map(e=>'<div class="flex items-center justify-between bg-gray-50 rounded-lg px-4 py-3"><span class="font-semibold text-slate-800">'+e.date+'</span><div class="flex flex-wrap gap-1">'+e.chapters.sort().map(c=>'<span class="bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5 rounded-full">Cap '+c+'</span>').join('')+'</div></div>').join('');const ts=new Date().toISOString().split('T')[0];const te=log.find(e=>e.date===ts);if(te)document.querySelectorAll('.study-check').forEach(cb=>{if(te.chapters.includes(parseInt(cb.value)))cb.checked=true;});}
+
+document.addEventListener('DOMContentLoaded',()=>{renderEtapas();renderQuizzes();updateProgress();});
+</script>
+</body>
+</html>
